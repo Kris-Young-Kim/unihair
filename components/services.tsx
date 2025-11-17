@@ -68,7 +68,7 @@ export default function Services() {
                   {service.description}
                 </p>
                 {service.details && (
-                  <p className="text-sm text-muted-foreground/80 leading-relaxed mb-3">
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                     {service.details}
                   </p>
                 )}

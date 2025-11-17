@@ -9,22 +9,22 @@
 :root {
   /* PRD 컬러 팔레트 반영: Primary #F8E8E0, Secondary #8B6C63, Accent #E9C9B8 */
   --background: oklch(0.98 0.01 70);
-  --foreground: oklch(0.25 0 0);
+  --foreground: oklch(0.2 0 0); /* 더 어둡게 조정하여 대비 향상 */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.25 0 0);
+  --card-foreground: oklch(0.2 0 0); /* 더 어둡게 조정 */
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.25 0 0);
+  --popover-foreground: oklch(0.2 0 0); /* 더 어둡게 조정 */
   /* Primary: #F8E8E0 (라이트 핑크) */
   --primary: oklch(0.95 0.02 50);
-  --primary-foreground: oklch(0.25 0 0);
+  --primary-foreground: oklch(0.2 0 0); /* 더 어둡게 조정하여 밝은 배경에서 가독성 향상 */
   /* Secondary: #8B6C63 (브라운) */
   --secondary: oklch(0.50 0.03 30);
   --secondary-foreground: oklch(0.98 0.01 70);
   --muted: oklch(0.95 0.02 70);
-  --muted-foreground: oklch(0.6 0 0);
+  --muted-foreground: oklch(0.4 0 0); /* 더 어둡게 조정 (0.6 -> 0.4) */
   /* Accent: #E9C9B8 (베이지) */
   --accent: oklch(0.85 0.04 50);
-  --accent-foreground: oklch(0.25 0 0);
+  --accent-foreground: oklch(0.2 0 0); /* 더 어둡게 조정 */
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: oklch(0.93 0.02 70);
