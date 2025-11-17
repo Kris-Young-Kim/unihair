@@ -2,15 +2,22 @@
 
 import { useAtom } from 'jotai'
 import { bookingModalOpen } from '@/lib/atoms'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Loader2 } from 'lucide-react'
 import { createBooking } from '@/actions/create-booking'
 import { useToast } from '@/hooks/use-toast'
+import {
+  trackBookingModalOpen,
+  trackBookingFormSubmit,
+  trackBookingFormSubmitSuccess,
+  trackBookingFormSubmitError,
+} from '@/lib/analytics'
 
 export default function BookingModal() {
   const [isOpen, setIsOpen] = useAtom(bookingModalOpen)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { toast } = useToast()
+  const [triggerSource, setTriggerSource] = useState<string>('unknown')
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -18,6 +25,15 @@ export default function BookingModal() {
     date: '',
     time: '',
   })
+
+  // 모달이 열릴 때 이벤트 추적
+  useEffect(() => {
+    if (isOpen) {
+      // 모달이 열릴 때 trigger_source는 이미 설정되어 있어야 함
+      // 하지만 현재 구조상 모달이 열릴 때마다 추적
+      trackBookingModalOpen(triggerSource)
+    }
+  }, [isOpen, triggerSource])
 
   const services = [
     { id: 'haircut', name: '헤어컷' },
@@ -40,6 +56,9 @@ export default function BookingModal() {
 
     setIsSubmitting(true)
 
+    // GA4: 폼 제출 이벤트 추적
+    trackBookingFormSubmit(formData.service, formData.date, formData.time)
+
     try {
       console.group('[예약 모달] 폼 제출 시작')
       console.log('제출 데이터:', formData)
@@ -50,6 +69,9 @@ export default function BookingModal() {
       if (result.success) {
         console.log('[예약 모달] 예약 성공')
         console.groupEnd()
+
+        // GA4: 폼 제출 성공 이벤트 추적
+        trackBookingFormSubmitSuccess(formData.service, formData.date, formData.time)
 
         // 성공 Toast 표시
         toast({
@@ -71,6 +93,12 @@ export default function BookingModal() {
         console.error('[예약 모달] 예약 실패:', result.error)
         console.groupEnd()
 
+        // GA4: 폼 제출 실패 이벤트 추적
+        trackBookingFormSubmitError(
+          result.error || '예약 처리 중 오류가 발생했습니다.',
+          formData.service
+        )
+
         // 실패 Toast 표시
         toast({
           title: '예약 실패',
@@ -81,6 +109,10 @@ export default function BookingModal() {
     } catch (error) {
       console.error('[예약 모달] 예외 발생:', error)
       console.groupEnd()
+
+      // GA4: 폼 제출 실패 이벤트 추적
+      const errorMessage = error instanceof Error ? error.message : '예상치 못한 오류가 발생했습니다.'
+      trackBookingFormSubmitError(errorMessage, formData.service)
 
       // 예외 발생 시 Toast 표시
       toast({

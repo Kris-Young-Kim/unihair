@@ -251,21 +251,236 @@
 
 ### 4.1 Google Analytics 4
 
-- [ ] GA4 설정 및 이벤트 추적 구현
-  - 예약 버튼 클릭 이벤트
-  - 예약 폼 제출 이벤트
-  - 섹션별 스크롤 추적
-- [ ] 파일: `lib/analytics.ts`
+#### 4.1.1 GA4 기본 설정 ✅
+
+- [ ] Google Analytics 계정 생성 및 GA4 속성 생성 (수동 작업)
+  - Google Analytics 계정 생성
+  - GA4 속성 생성 및 측정 ID 발급
+  - 데이터 스트림 설정 (웹 스트림)
+- [x] 환경 변수 설정
+  - `.env.local`에 `NEXT_PUBLIC_GA_MEASUREMENT_ID` 추가 필요 (사용자 작업)
+  - 예: `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX`
+- [x] `lib/analytics.ts` 생성
+  - GA4 이벤트 추적 유틸리티 함수 구현 완료
+  - `gtag` 함수 타입 정의 완료
+  - 개발 환경에서 이벤트 로깅 (콘솔 출력) 완료
+  - 프로덕션 환경에서만 실제 GA4 전송 완료
+- [x] `app/layout.tsx`에 GA4 스크립트 추가
+  - Next.js `Script` 컴포넌트 사용 완료
+  - `strategy="afterInteractive"` 설정 완료
+  - Google Analytics gtag.js 스크립트 로드 완료
+  - 환경 변수로 측정 ID 주입 완료
+
+#### 4.1.2 이벤트 추적 구현 ✅
+
+- [x] 예약 버튼 클릭 이벤트
+  - 파일: `components/booking-button.tsx`, `components/booking-floating-button.tsx`
+  - 이벤트명: `booking_button_click` 구현 완료
+  - 이벤트 파라미터:
+    - `button_location`: 버튼 위치 (예: 'hero', 'floating_button') 구현 완료
+    - `page_section`: 현재 페이지 섹션 구현 완료
+  - 구현 방법: 버튼 `onClick` 핸들러에 `trackBookingButtonClick` 호출 완료
+- [x] 예약 모달 열기 이벤트
+  - 파일: `components/booking-modal.tsx`
+  - 이벤트명: `booking_modal_open` 구현 완료
+  - 이벤트 파라미터:
+    - `trigger_source`: 모달을 연 버튼 위치 구현 완료
+- [x] 예약 폼 제출 이벤트
+  - 파일: `components/booking-modal.tsx`
+  - 이벤트명: `booking_form_submit` 구현 완료
+  - 이벤트 파라미터:
+    - `service_type`: 선택한 서비스 (haircut, color, perm, treatment) 구현 완료
+    - `booking_date`: 예약 날짜 구현 완료
+    - `booking_time`: 예약 시간 구현 완료
+  - 성공/실패 이벤트 분리:
+    - 성공: `booking_form_submit_success` 구현 완료
+    - 실패: `booking_form_submit_error` (에러 메시지 포함) 구현 완료
+- [x] 섹션별 스크롤 추적
+  - 파일: `hooks/use-scroll-tracking.ts` 생성 완료
+  - Intersection Observer API 사용 완료
+  - 추적 대상 섹션:
+    - `hero`: 히어로 섹션 적용 완료
+    - `services`: 서비스 섹션 적용 완료
+    - `team`: 팀 섹션 적용 완료
+    - `reviews`: 리뷰 섹션 적용 완료
+    - `faq`: FAQ 섹션 적용 완료
+    - `location`: 위치 섹션 적용 완료
+  - 이벤트명: `section_view` 구현 완료
+  - 이벤트 파라미터:
+    - `section_name`: 섹션 이름 구현 완료
+    - `scroll_depth`: 스크롤 깊이 (%) 구현 완료
+  - 중복 추적 방지 (각 섹션당 1회만) 구현 완료
+- [x] 페이지뷰 추적
+  - `app/layout.tsx`에서 GA4 기본 설정으로 자동 페이지뷰 추적 완료
+  - gtag config에 `page_path` 자동 설정 완료
+
+#### 4.1.3 전환 목표 설정 (GA4 대시보드)
+
+- [ ] 예약 완료 전환 목표 설정 (수동 작업)
+  - GA4 대시보드에서 이벤트 기반 전환 설정
+  - `booking_form_submit_success` 이벤트를 전환으로 표시
+- [ ] 사용자 여정 분석 설정
+  - 이벤트 시퀀스 분석
+  - 퍼널 분석 설정
 
 ### 4.2 Facebook Pixel (선택사항)
 
-- [ ] Facebook Pixel 스크립트 추가
-- [ ] 전환 이벤트 설정
+#### 4.2.1 Facebook Pixel 기본 설정
+
+- [ ] Facebook Business Manager 계정 생성 (수동 작업)
+- [ ] Facebook Pixel 생성 및 Pixel ID 발급 (수동 작업)
+- [ ] 환경 변수 설정
+  - `.env.local`에 `NEXT_PUBLIC_FB_PIXEL_ID` 추가
+  - 예: `NEXT_PUBLIC_FB_PIXEL_ID=1234567890123456`
+- [ ] `lib/facebook-pixel.ts` 생성 (선택사항)
+  - Facebook Pixel 이벤트 추적 유틸리티 함수
+  - `fbq` 함수 타입 정의
+- [ ] `app/layout.tsx`에 Facebook Pixel 스크립트 추가
+  - Next.js `Script` 컴포넌트 사용
+  - Facebook Pixel 기본 스크립트 로드
+  - 환경 변수로 Pixel ID 주입
+
+#### 4.2.2 전환 이벤트 설정
+
+- [ ] 예약 완료 전환 이벤트
+  - 파일: `components/booking-modal.tsx`
+  - 이벤트명: `CompleteRegistration` 또는 `Lead`
+  - 이벤트 파라미터:
+    - `content_name`: 서비스 유형
+    - `value`: 예약 가치 (선택사항)
+    - `currency`: 'KRW'
+- [ ] 페이지뷰 이벤트 (자동)
+  - Facebook Pixel 기본 제공
 
 ### 4.3 검색 엔진 등록
 
-- [ ] Google Search Console 연동
-- [ ] 네이버 사이트 등록
+#### 4.3.1 Google Search Console 연동
+
+- [ ] Google Search Console 계정 생성 및 사이트 등록 (수동 작업)
+  - Google 계정으로 Search Console 접속
+  - 속성 추가 (URL 접두어 또는 도메인)
+  - 소유권 확인 방법 선택:
+    - HTML 파일 업로드
+    - HTML 태그 (메타 태그)
+    - Google Analytics 연동
+    - DNS 레코드
+- [ ] 소유권 확인 태그 추가
+  - 파일: `app/layout.tsx`
+  - `metadata.verification.google`에 검증 코드 추가
+  - 또는 `public/google-site-verification.html` 파일 생성
+- [ ] 사이트맵 제출
+  - Google Search Console에서 사이트맵 제출
+  - URL: `https://unihair.com/sitemap.xml`
+  - 제출 후 크롤링 요청
+- [ ] 색인 생성 요청
+  - Google Search Console에서 URL 검사 도구 사용
+  - 메인 페이지 및 중요 페이지 색인 요청
+
+#### 4.3.2 네이버 사이트 등록
+
+- [ ] 네이버 서치어드바이저 계정 생성 및 사이트 등록 (수동 작업)
+  - 네이버 서치어드바이저 접속
+  - 사이트 등록 및 소유권 확인
+- [ ] 소유권 확인 메타 태그 추가
+  - 파일: `app/layout.tsx`
+  - `metadata.verification.other['naver-site-verification']`에 검증 코드 추가
+- [ ] 사이트맵 제출
+  - 네이버 서치어드바이저에서 사이트맵 제출
+  - URL: `https://unihair.com/sitemap.xml`
+- [ ] RSS 피드 제출 (선택사항)
+  - 블로그나 뉴스 섹션이 있는 경우
+
+### 4.4 구현 세부사항 및 작업 순서
+
+#### 작업 순서
+
+1. **Google Analytics 4 설정** (우선순위: 높음)
+
+   - GA4 계정 생성 및 측정 ID 발급
+   - 기본 스크립트 추가 및 페이지뷰 추적
+   - 주요 이벤트 추적 구현 (예약 버튼, 폼 제출)
+
+2. **섹션별 스크롤 추적** (우선순위: 중간)
+
+   - Intersection Observer 기반 스크롤 추적 훅 구현
+   - 각 섹션에 추적 적용
+
+3. **Facebook Pixel** (우선순위: 낮음, 선택사항)
+
+   - 마케팅 캠페인 운영 시 필요
+   - 기본 설정 및 전환 이벤트만 구현
+
+4. **검색 엔진 등록** (우선순위: 높음)
+   - Google Search Console 연동 (필수)
+   - 네이버 서치어드바이저 등록 (한국 시장 중요)
+
+#### 주요 구현 포인트
+
+**GA4 이벤트 추적 구조**:
+
+```typescript
+// lib/analytics.ts 예시 구조
+export const trackEvent = (
+  eventName: string,
+  eventParams?: Record<string, any>,
+) => {
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", eventName, eventParams);
+  }
+  // 개발 환경에서 콘솔 출력
+  if (process.env.NODE_ENV === "development") {
+    console.log("[GA4 Event]", eventName, eventParams);
+  }
+};
+```
+
+**스크롤 추적 훅 구조**:
+
+```typescript
+// hooks/use-scroll-tracking.ts 예시 구조
+export const useScrollTracking = (sectionName: string) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [hasTracked, setHasTracked] = useState(false);
+
+  useEffect(() => {
+    // Intersection Observer로 섹션 뷰 추적
+    // 한 번만 추적하도록 hasTracked 상태 관리
+  }, [sectionName]);
+
+  return sectionRef;
+};
+```
+
+**환경 변수 관리**:
+
+- 개발 환경: 이벤트는 콘솔에만 출력
+- 프로덕션 환경: 실제 GA4/Facebook Pixel로 전송
+- 환경 변수가 없으면 분석 도구 비활성화 (에러 방지)
+
+#### 예상 작업 시간
+
+- 4.1 Google Analytics 4: 2-3시간
+  - 기본 설정: 30분
+  - 이벤트 추적 구현: 1-2시간
+  - 스크롤 추적: 1시간
+- 4.2 Facebook Pixel: 1시간 (선택사항)
+- 4.3 검색 엔진 등록: 1-2시간 (수동 작업 포함)
+
+**총 예상 시간**: 약 4-6시간 (Facebook Pixel 제외 시 3-5시간)
+
+#### 검증 방법
+
+- **GA4 검증**:
+  - GA4 실시간 보고서에서 이벤트 확인
+  - Google Tag Assistant 확장 프로그램 사용
+  - 브라우저 개발자 도구 Network 탭에서 gtag 요청 확인
+- **Facebook Pixel 검증**:
+  - Facebook Pixel Helper 확장 프로그램 사용
+  - Facebook Events Manager에서 이벤트 확인
+- **검색 엔진 등록 검증**:
+  - Google Search Console에서 색인 상태 확인
+  - 네이버 서치어드바이저에서 색인 상태 확인
+  - `site:unihair.com` 검색으로 색인된 페이지 확인
 
 ---
 
@@ -438,14 +653,16 @@
 - [x] `actions/create-booking.ts`: 예약 데이터를 Google Spreadsheet에 저장하는 Server Action (완료)
 - [x] `app/sitemap.ts`: 사이트맵 생성 (완료)
 - [x] `app/robots.ts`: robots.txt 생성 (완료)
+- [x] `lib/analytics.ts`: Google Analytics 이벤트 추적 (완료)
+- [x] `hooks/use-scroll-tracking.ts`: 섹션별 스크롤 추적 훅 (완료)
 - [ ] `actions/send-booking-notification.ts` (선택): 예약 알림 발송
-- [ ] `lib/analytics.ts`: Google Analytics 이벤트 추적
 
 ### 환경 변수 추가 (.env)
 
 - `GOOGLE_SHEETS_SPREADSHEET_ID`: Google Spreadsheet ID
 - `GOOGLE_SERVICE_ACCOUNT_EMAIL`: 서비스 계정 이메일
 - `GOOGLE_PRIVATE_KEY`: 서비스 계정 개인 키
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID`: Google Analytics 4 측정 ID (예: G-XXXXXXXXXX)
 
 ### 수정 완료 파일
 
@@ -456,6 +673,15 @@
 - [x] `components/team.tsx`: 실제 정보 반영 완료
 - [x] `components/reviews.tsx`: 실제 리뷰 데이터 추가, Review 스키마 추가 완료
 - [x] `components/faq.tsx`: FAQ 내용 보강 완료
+- [x] `components/booking-button.tsx`: GA4 예약 버튼 클릭 이벤트 추적 추가 완료
+- [x] `components/booking-floating-button.tsx`: GA4 예약 버튼 클릭 이벤트 추적 추가 완료
+- [x] `components/booking-modal.tsx`: GA4 모달 열기, 폼 제출 이벤트 추적 추가 완료
+- [x] `components/hero.tsx`: 스크롤 추적 적용 완료
+- [x] `components/services.tsx`: 스크롤 추적 적용 완료
+- [x] `components/team.tsx`: 스크롤 추적 적용 완료
+- [x] `components/reviews.tsx`: 스크롤 추적 적용 완료
+- [x] `components/faq.tsx`: 스크롤 추적 적용 완료
+- [x] `components/location.tsx`: 스크롤 추적 적용 완료
 
 ---
 

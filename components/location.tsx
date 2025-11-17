@@ -1,10 +1,13 @@
 'use client'
 
 import { MapPin, Phone, Clock, MapIcon } from 'lucide-react'
+import { useScrollTracking } from '@/hooks/use-scroll-tracking'
 
 export default function Location() {
+  const sectionRef = useScrollTracking('location')
+
   return (
-    <section id="location" className="py-16 sm:py-24 bg-secondary/10">
+    <section ref={sectionRef} id="location" className="py-16 sm:py-24 bg-secondary/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 text-balance">

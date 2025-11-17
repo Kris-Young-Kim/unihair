@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
+import { useScrollTracking } from '@/hooks/use-scroll-tracking'
 
 const faqs = [
   {
@@ -63,9 +64,10 @@ const faqs = [
 
 export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0)
+  const sectionRef = useScrollTracking('faq')
 
   return (
-    <section className="py-16 sm:py-24 bg-secondary/10">
+    <section ref={sectionRef} id="faq" className="py-16 sm:py-24 bg-secondary/10">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 text-balance">

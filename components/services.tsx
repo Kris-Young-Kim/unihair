@@ -2,6 +2,7 @@
 
 import { Scissors, Sparkles, Waves, Heart } from 'lucide-react'
 import BookingButton from './booking-button'
+import { useScrollTracking } from '@/hooks/use-scroll-tracking'
 
 const services = [
   {
@@ -35,8 +36,10 @@ const services = [
 ]
 
 export default function Services() {
+  const sectionRef = useScrollTracking('services')
+
   return (
-    <section id="services" className="py-16 sm:py-24 bg-white">
+    <section ref={sectionRef} id="services" className="py-16 sm:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 text-balance">

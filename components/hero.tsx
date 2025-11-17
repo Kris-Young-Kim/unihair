@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
 import Image from 'next/image'
 import BookingButton from './booking-button'
+import { useScrollTracking } from '@/hooks/use-scroll-tracking'
 
 export default function Hero() {
+  const sectionRef = useScrollTracking('hero')
+
   return (
-    <section className="pt-20 pb-12 bg-gradient-to-b from-white to-secondary/10">
+    <section ref={sectionRef} id="hero" className="pt-20 pb-12 bg-gradient-to-b from-white to-secondary/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Left: Content */}

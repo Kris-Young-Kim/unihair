@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { useScrollTracking } from '@/hooks/use-scroll-tracking'
 
 const team = [
   {
@@ -30,8 +31,10 @@ const team = [
 ]
 
 export default function Team() {
+  const sectionRef = useScrollTracking('team')
+
   return (
-    <section id="team" className="py-16 sm:py-24 bg-white">
+    <section ref={sectionRef} id="team" className="py-16 sm:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 text-balance">

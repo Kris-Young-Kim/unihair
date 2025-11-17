@@ -1,6 +1,7 @@
 import { Star } from 'lucide-react'
 import Image from 'next/image'
 import Script from 'next/script'
+import { useScrollTracking } from '@/hooks/use-scroll-tracking'
 
 const reviews = [
   {
@@ -62,9 +63,10 @@ function generateReviewSchema() {
 
 export default function Reviews() {
   const reviewSchemas = generateReviewSchema()
+  const sectionRef = useScrollTracking('reviews')
 
   return (
-    <section id="reviews" className="py-16 sm:py-24 bg-secondary/10">
+    <section ref={sectionRef} id="reviews" className="py-16 sm:py-24 bg-secondary/10">
       {/* Review 스키마 JSON-LD */}
       {reviewSchemas.map((schema, index) => (
         <Script
