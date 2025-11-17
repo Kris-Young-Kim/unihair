@@ -41,6 +41,7 @@ export default function Hero() {
               priority
               sizes="(max-width: 768px) 100vw, 50vw"
               quality={90}
+              fetchPriority="high"
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent"></div>
           </div>

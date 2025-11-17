@@ -175,6 +175,15 @@ export default function RootLayout({
     <html lang="ko">
       <head>
         {/* JSON-LD 스키마 */}
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preload"
+          as="image"
+          href="/luxury-hair-salon-interior-modern-bright.jpg"
+          imagesrcset="/luxury-hair-salon-interior-modern-bright.jpg 1x"
+          imagesizes="(max-width: 768px) 100vw, 50vw"
+        />
         <Script
           id="organization-schema"
           type="application/ld+json"

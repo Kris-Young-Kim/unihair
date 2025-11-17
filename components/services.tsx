@@ -56,7 +56,7 @@ export default function Services() {
             return (
               <div
                 key={index}
-                className="p-8 bg-secondary/30 rounded-xl hover:shadow-lg transition"
+                className="p-8 bg-secondary/30 rounded-xl hover:shadow-lg transition min-h-[340px] flex flex-col"
               >
                 <div className="mb-4 inline-block p-3 bg-primary/10 rounded-lg">
                   <Icon className="text-primary" size={28} />
@@ -64,7 +64,7 @@ export default function Services() {
                 <h3 className="text-xl font-bold text-foreground mb-3">
                   {service.title}
                 </h3>
-                <p className="text-muted-foreground leading-relaxed mb-3">
+                <p className="text-muted-foreground leading-relaxed mb-3 flex-1">
                   {service.description}
                 </p>
                 {service.details && (
@@ -82,7 +82,7 @@ export default function Services() {
           })}
         </div>
 
-        <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-xl p-8 text-center">
+        <div className="bg-gradient-to-r from-primary/5 to-accent/5 rounded-xl p-8 text-center min-h-[220px] flex flex-col items-center justify-center">
           <h3 className="text-2xl font-bold text-foreground mb-4">1:1 맞춤상담</h3>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
             당신의 헤어타입, 라이프스타일, 이미지를 고려한 전문가의 상담을 받아보세요. 가장 어울리는 스타일을 함께 만들어갑니다.

@@ -93,7 +93,10 @@ export default function Reviews() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {reviews.map((review, index) => (
-            <div key={index} className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
+            <div
+              key={index}
+              className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition min-h-[320px] flex flex-col"
+            >
               <div className="flex items-center gap-4 mb-4">
                 <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0">
                   <Image
@@ -121,7 +124,7 @@ export default function Reviews() {
                   </span>
                 )}
               </div>
-              <p className="text-muted-foreground leading-relaxed mb-3">{review.comment}</p>
+              <p className="text-muted-foreground leading-relaxed mb-3 flex-1">{review.comment}</p>
               {review.date && (
                 <p className="text-xs text-muted-foreground/70">{review.date}</p>
               )}
