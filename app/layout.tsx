@@ -6,6 +6,7 @@ import './globals.css'
 
 // 사이트 기본 URL (환경 변수 또는 실제 도메인으로 교체 필요)
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://unihair.com'
+const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-6JMZGXLWT6'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -197,7 +198,7 @@ export default function RootLayout({
         />
         {/* Google tag (gtag.js) */}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-4EL47WHR59"
+          src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
           strategy="afterInteractive"
         />
         <Script
@@ -208,7 +209,7 @@ export default function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-4EL47WHR59', {
+              gtag('config', '${gaMeasurementId}', {
                 page_path: window.location.pathname,
               });
             `,

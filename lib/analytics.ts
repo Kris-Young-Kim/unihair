@@ -27,7 +27,7 @@ declare global {
 export const getGAMeasurementId = (): string | undefined => {
   if (typeof window === 'undefined') return undefined
   // 환경 변수가 있으면 사용하고, 없으면 기본값 사용
-  return process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-4EL47WHR59'
+  return process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-6JMZGXLWT6'
 }
 
 /**
