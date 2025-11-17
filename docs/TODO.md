@@ -21,14 +21,19 @@
   - [x] 리뷰 섹션 개선 (출처 및 날짜 추가, SNS 링크 업데이트)
   - [x] FAQ 섹션 확장 (5개 → 11개)
   - [x] 이벤트 섹션 구조화 및 동적 처리
-  - [x] 이미지 최적화 (priority, sizes 속성 추가)
-  - [x] PRD 컬러 팔레트 반영
+- [x] 이미지 최적화 (priority, sizes 속성 추가)
+- [x] PRD 컬러 팔레트 반영
+- [x] SEO 및 메타데이터 최적화 (Phase 3)
+  - [x] Open Graph 및 Twitter Card 메타 태그 추가
+  - [x] JSON-LD 구조화된 데이터 추가 (Organization, LocalBusiness, WebSite)
+  - [x] 사이트맵 및 robots.txt 생성
+  - [x] Review 스키마 추가
 
 ### 진행 중/미완료 작업
 
 - [x] 예약 시스템 백엔드 연동 (Google Spreadsheet) - 완료
 - [x] 실제 콘텐츠 반영 및 최적화 - 완료
-- [ ] SEO 및 성능 최적화
+- [x] SEO 및 메타데이터 최적화 - 완료
 - [ ] 분석 도구 연동
 
 ---
@@ -111,28 +116,134 @@
   - [x] Primary: #F8E8E0 (라이트 핑크) → oklch(0.95 0.02 50)
   - [x] Secondary: #8B6C63 (브라운) → oklch(0.50 0.03 30)
   - [x] Accent: #E9C9B8 (베이지) → oklch(0.85 0.04 50)
-- [ ] Pretendard 폰트 적용 (현재 Geist 사용 중, 선택사항)
+- [x] Pretendard 폰트 적용 (완료)
+  - [x] Pretendard CDN 추가 (`app/globals.css`)
+  - [x] Geist 폰트 제거 (`app/layout.tsx`)
+  - [x] Tailwind CSS 폰트 변수 업데이트 (`--font-sans`, `--font-mono`)
+  - [x] 폰트 렌더링 최적화 (antialiasing, font-feature-settings)
 
 ---
 
-## Phase 3: SEO 및 메타데이터 최적화
+## Phase 3: SEO 및 메타데이터 최적화 ✅
 
-### 3.1 메타 태그 강화
+### 3.1 메타 태그 강화 ✅
 
-- [ ] `app/layout.tsx`의 metadata 개선
-  - Open Graph 이미지 추가
-  - Twitter Card 설정
-  - 구조화된 데이터 (JSON-LD) 추가
+- [x] `app/layout.tsx`의 metadata 개선
+  - [x] Open Graph 이미지 추가
+    - `og:image`: `/og-image.jpg` 설정
+    - `og:image:width`, `og:image:height` 설정 (1200x630px)
+    - `og:image:alt` 설정
+  - [x] Open Graph 기본 태그 추가
+    - `og:title`, `og:description`, `og:type`, `og:url`, `og:site_name` 설정
+    - `og:locale`: 'ko_KR' 설정
+  - [x] Twitter Card 설정
+    - `twitter:card`: 'summary_large_image' 설정
+    - `twitter:title`, `twitter:description`, `twitter:image` 설정
+  - [x] 추가 메타 태그
+    - `author`, `robots`, `canonical` URL 설정
+    - `metadataBase` 설정으로 상대 경로 해결
+  - [x] 구조화된 데이터 (JSON-LD) 추가
+    - `app/layout.tsx`에 `<script type="application/ld+json">` 추가
+    - Organization 스키마 (브랜드 정보)
+    - WebSite 스키마 (검색 기능)
 
-### 3.2 사이트맵 및 robots.txt
+### 3.2 사이트맵 및 robots.txt ✅
 
-- [ ] `app/sitemap.ts` 생성
-- [ ] `app/robots.ts` 생성
+- [x] `app/sitemap.ts` 생성
+  - Next.js 15의 동적 sitemap 생성 함수 구현
+  - 메인 페이지 URL 포함
+  - `lastModified`, `changeFrequency`, `priority` 설정
+  - 향후 추가 페이지 확장 가능하도록 구조화
+- [x] `app/robots.ts` 생성
+  - Next.js 15의 동적 robots.txt 생성 함수 구현
+  - `User-agent: *` 규칙 설정
+  - `Allow` 및 `Disallow` 규칙 설정 (`/api/` 제외)
+  - `Sitemap` URL 포함
 
-### 3.3 Schema.org 마크업
+### 3.3 Schema.org 마크업 ✅
 
-- [ ] LocalBusiness 스키마 추가
-- [ ] Review 스키마 추가 (리뷰 섹션용)
+- [x] LocalBusiness 스키마 추가
+  - `app/layout.tsx`에 JSON-LD 추가
+  - 필수 필드 구현:
+    - `@type`: "LocalBusiness"
+    - `name`: "UNIHAIR"
+    - `address`: 주소 정보 (서울시 강남구 테헤란로 123)
+    - `telephone`: 전화번호 (02-1234-5678)
+    - `openingHoursSpecification`: 영업시간 (월-금: 10:00-20:00, 토: 10:00-19:00)
+    - `priceRange`: 가격대 ("$$")
+    - `image`: 매장 이미지 URL
+    - `url`: 웹사이트 URL
+  - 선택 필드:
+    - `description`: 매장 설명
+    - `geo`: 위도/경도 (주석으로 표시, 실제 좌표로 교체 필요)
+- [x] Review 스키마 추가 (리뷰 섹션용)
+  - `components/reviews.tsx`에 JSON-LD 추가
+  - 각 리뷰에 대한 Review 스키마 자동 생성
+  - 필수 필드 구현:
+    - `@type`: "Review"
+    - `author`: 리뷰 작성자 정보
+    - `reviewRating`: 평점 (1-5)
+    - `reviewBody`: 리뷰 내용
+    - `datePublished`: 리뷰 날짜
+  - LocalBusiness의 `@id`와 연결하여 리뷰 연결
+
+### 3.4 구현 세부사항 및 작업 순서
+
+#### 작업 순서
+
+1. **메타 태그 강화** (우선순위: 높음)
+
+   - Open Graph 및 Twitter Card는 SNS 공유 시 중요
+   - 구조화된 데이터는 검색 엔진 최적화에 필수
+
+2. **사이트맵 및 robots.txt** (우선순위: 중간)
+
+   - 검색 엔진 크롤링 최적화
+   - Next.js 15의 동적 생성 기능 활용
+
+3. **Schema.org 마크업** (우선순위: 높음)
+   - Google 검색 결과에 리치 스니펫 표시 가능
+   - LocalBusiness는 지역 검색에 중요
+
+#### 주요 구현 포인트
+
+**메타데이터 구조**:
+
+- Next.js 15의 `Metadata` 타입 사용
+- `openGraph`, `twitter` 속성 활용
+- 환경 변수로 사이트 URL 관리 (선택사항)
+
+**JSON-LD 구조화된 데이터**:
+
+- `<script type="application/ld+json">` 태그 사용
+- Server Component에서 직접 추가 (클라이언트 사이드 렌더링 불필요)
+- 스키마 검증 도구로 테스트 (Google Rich Results Test)
+
+**사이트맵 생성**:
+
+- Next.js 15의 `generateSitemaps` 함수 사용
+- 현재는 단일 페이지이지만 향후 확장 고려
+- `lastModified`는 현재 날짜로 설정
+
+**robots.txt**:
+
+- 모든 페이지 크롤링 허용 (기본 설정)
+- 향후 관리자 페이지 추가 시 수정 가능
+
+#### 예상 작업 시간
+
+- 3.1 메타 태그 강화: 1-2시간
+- 3.2 사이트맵 및 robots.txt: 30분-1시간
+- 3.3 Schema.org 마크업: 1-2시간
+
+**총 예상 시간**: 약 3-5시간
+
+#### 검증 방법
+
+- Google Rich Results Test로 스키마 검증
+- Facebook Sharing Debugger로 Open Graph 확인
+- Twitter Card Validator로 Twitter Card 확인
+- Google Search Console에서 사이트맵 제출 테스트
 
 ---
 
@@ -325,10 +436,10 @@
 
 - [x] `lib/google-sheets.ts`: Google Sheets API 클라이언트 설정 (완료)
 - [x] `actions/create-booking.ts`: 예약 데이터를 Google Spreadsheet에 저장하는 Server Action (완료)
+- [x] `app/sitemap.ts`: 사이트맵 생성 (완료)
+- [x] `app/robots.ts`: robots.txt 생성 (완료)
 - [ ] `actions/send-booking-notification.ts` (선택): 예약 알림 발송
 - [ ] `lib/analytics.ts`: Google Analytics 이벤트 추적
-- [ ] `app/sitemap.ts`: 사이트맵 생성
-- [ ] `app/robots.ts`: robots.txt 생성
 
 ### 환경 변수 추가 (.env)
 
@@ -339,16 +450,12 @@
 ### 수정 완료 파일
 
 - [x] `components/booking-modal.tsx`: Server Action 연동, UX 개선 완료
-- [x] `app/layout.tsx`: Toaster 컴포넌트 추가 완료
-
-### 수정 예정 파일
-
-- `app/layout.tsx`: SEO 메타데이터 강화 (추가 작업)
-- `app/globals.css`: 디자인 시스템 컬러 반영
-- `components/services.tsx`: 콘텐츠 보강
-- `components/team.tsx`: 실제 정보 반영
-- `components/reviews.tsx`: 실제 리뷰 데이터 추가
-- `components/faq.tsx`: FAQ 내용 보강
+- [x] `app/layout.tsx`: Toaster 컴포넌트 추가, SEO 메타데이터 강화 완료 (Open Graph, Twitter Card, JSON-LD 스키마)
+- [x] `app/globals.css`: 디자인 시스템 컬러 반영 완료
+- [x] `components/services.tsx`: 콘텐츠 보강 완료
+- [x] `components/team.tsx`: 실제 정보 반영 완료
+- [x] `components/reviews.tsx`: 실제 리뷰 데이터 추가, Review 스키마 추가 완료
+- [x] `components/faq.tsx`: FAQ 내용 보강 완료
 
 ---
 

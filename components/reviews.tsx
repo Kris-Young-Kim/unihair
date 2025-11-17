@@ -1,7 +1,6 @@
-'use client'
-
 import { Star } from 'lucide-react'
 import Image from 'next/image'
+import Script from 'next/script'
 
 const reviews = [
   {
@@ -33,9 +32,51 @@ const reviews = [
   },
 ]
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://unihair.com'
+
+// Review 스키마 생성 함수
+function generateReviewSchema() {
+  return reviews.map((review, index) => ({
+    '@context': 'https://schema.org',
+    '@type': 'Review',
+    '@id': `${siteUrl}#review-${index + 1}`,
+    itemReviewed: {
+      '@type': 'LocalBusiness',
+      name: 'UNIHAIR',
+      '@id': `${siteUrl}#localbusiness`,
+    },
+    author: {
+      '@type': 'Person',
+      name: review.name,
+    },
+    datePublished: review.date ? new Date(review.date.replace(/\./g, '-')).toISOString() : new Date().toISOString(),
+    reviewBody: review.comment,
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: review.rating,
+      bestRating: 5,
+      worstRating: 1,
+    },
+  }))
+}
+
 export default function Reviews() {
+  const reviewSchemas = generateReviewSchema()
+
   return (
     <section id="reviews" className="py-16 sm:py-24 bg-secondary/10">
+      {/* Review 스키마 JSON-LD */}
+      {reviewSchemas.map((schema, index) => (
+        <Script
+          key={`review-schema-${index}`}
+          id={`review-schema-${index}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(schema),
+          }}
+        />
+      ))}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 text-balance">
