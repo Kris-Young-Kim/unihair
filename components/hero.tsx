@@ -14,10 +14,11 @@ export default function Hero() {
           {/* Left: Content */}
           <div className="flex flex-col justify-center">
             <div className="mb-2 inline-block w-fit px-3 py-1 bg-primary/10 rounded-full">
-              <p className="text-sm font-semibold text-primary">프리미엄 헤어살롱</p>
+              <p className="text-sm font-semibold text-secondary">프리미엄 헤어살롱</p>
             </div>
-            <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4 leading-tight text-balance">
-              당신의 새로운 스타일을 완성하다
+            <h1 className="text-4xl sm:text-5xl font-bold text-foreground mb-4 leading-tight">
+              당신의 새로운 스타일을<br />
+              완성하다
             </h1>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed text-pretty">
               UNIHAIR는 트렌디한 헤어스타일과 전문적인 시술로 당신의 매력을 더해줍니다. 숙련된 스타일리스트와 함께 1:1 맞춤상담으로 완벽한 이미지를 만들어보세요.
