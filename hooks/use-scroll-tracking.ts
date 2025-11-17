@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * @file hooks/use-scroll-tracking.ts
  * @description 섹션별 스크롤 추적을 위한 커스텀 훅

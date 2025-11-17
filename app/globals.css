@@ -1,8 +1,8 @@
+/* Pretendard 폰트 CDN - @import는 다른 규칙보다 앞에 와야 함 */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
 @import 'tailwindcss';
 @import 'tw-animate-css';
-
-/* Pretendard 폰트 CDN */
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 
 @custom-variant dark (&:is(.dark *));
 
