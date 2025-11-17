@@ -24,7 +24,8 @@ import { google } from 'googleapis'
 // 환경 변수 확인
 const SPREADSHEET_ID = process.env.GOOGLE_SHEETS_SPREADSHEET_ID
 const SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
-const PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY
+const PRIVATE_KEY_RAW = process.env.GOOGLE_PRIVATE_KEY
+const PRIVATE_KEY_BASE64 = process.env.GOOGLE_PRIVATE_KEY_BASE64
 
 // 시트 이름 (환경 변수로 설정 가능하거나 기본값 사용)
 const SHEET_NAME = process.env.GOOGLE_SHEETS_SHEET_NAME || '예약'
@@ -46,11 +47,8 @@ export async function getSheetsClient() {
     throw new Error('GOOGLE_SERVICE_ACCOUNT_EMAIL 환경 변수가 설정되지 않았습니다.')
   }
 
-  if (!PRIVATE_KEY) {
-    throw new Error('GOOGLE_PRIVATE_KEY 환경 변수가 설정되지 않았습니다.')
-  }
-
-  const normalizedKey = normalizePrivateKey(PRIVATE_KEY)
+  const privateKey = resolvePrivateKey()
+  const normalizedKey = normalizePrivateKey(privateKey)
 
   // JWT 클라이언트 생성
   const auth = new google.auth.JWT({
@@ -174,13 +172,37 @@ function normalizePrivateKey(key: string) {
   let sanitized = key.trim()
 
   // Windows 환경에서 쌍따옴표가 포함될 수 있으므로 제거
-  if (sanitized.startsWith('"') && sanitized.endsWith('"')) {
+  if (
+    (sanitized.startsWith('"') && sanitized.endsWith('"')) ||
+    (sanitized.startsWith("'") && sanitized.endsWith("'"))
+  ) {
     sanitized = sanitized.slice(1, -1)
   }
 
-  // \n, \r 이스케이프를 실제 줄바꿈으로 변환
-  sanitized = sanitized.replace(/\\r/g, '\r').replace(/\\n/g, '\n')
+  // base64-decoded 문자열의 경우에도 CRLF 정규화
+  sanitized = sanitized
+    .replace(/\\r\\n/g, '\n')
+    .replace(/\\n/g, '\n')
+    .replace(/\\r/g, '\r')
 
   return sanitized
+}
+
+function resolvePrivateKey() {
+  if (PRIVATE_KEY_BASE64) {
+    try {
+      return Buffer.from(PRIVATE_KEY_BASE64, 'base64').toString('utf-8')
+    } catch (error) {
+      throw new Error('GOOGLE_PRIVATE_KEY_BASE64 값을 base64로 디코딩할 수 없습니다.')
+    }
+  }
+
+  if (PRIVATE_KEY_RAW) {
+    return PRIVATE_KEY_RAW
+  }
+
+  throw new Error(
+    'GOOGLE_PRIVATE_KEY 또는 GOOGLE_PRIVATE_KEY_BASE64 환경 변수가 설정되지 않았습니다.'
+  )
 }
 
