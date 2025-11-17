@@ -153,21 +153,25 @@ export const trackBookingFormSubmit = (
 }
 
 /**
- * 예약 폼 제출 성공 이벤트 추적
+ * 예약 폼 제출 성공 이벤트 추적 (전환 이벤트)
  *
  * @param serviceType - 선택한 서비스
  * @param bookingDate - 예약 날짜
  * @param bookingTime - 예약 시간
+ * @param value - 예약 가치 (선택사항, 전환 가치 분석용)
  */
 export const trackBookingFormSubmitSuccess = (
   serviceType: string,
   bookingDate: string,
-  bookingTime: string
+  bookingTime: string,
+  value?: number
 ): void => {
   trackEvent('booking_form_submit_success', {
     service_type: serviceType,
     booking_date: bookingDate,
     booking_time: bookingTime,
+    value: value || 1, // 기본값 1 (전환 횟수로 계산)
+    currency: 'KRW', // 통화 단위
   })
 }
 

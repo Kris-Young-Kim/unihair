@@ -70,8 +70,9 @@ export default function BookingModal() {
         console.log('[예약 모달] 예약 성공')
         console.groupEnd()
 
-        // GA4: 폼 제출 성공 이벤트 추적
-        trackBookingFormSubmitSuccess(formData.service, formData.date, formData.time)
+        // GA4: 폼 제출 성공 이벤트 추적 (전환 이벤트)
+        // value는 서비스별로 다를 수 있음 (향후 개선 가능)
+        trackBookingFormSubmitSuccess(formData.service, formData.date, formData.time, 1)
 
         // 성공 Toast 표시
         toast({
