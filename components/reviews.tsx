@@ -1,0 +1,84 @@
+'use client'
+
+import { Star } from 'lucide-react'
+
+const reviews = [
+  {
+    name: '김민지',
+    role: '회사원',
+    rating: 5,
+    comment: '정말 친절하고 디자인도 최고에요! 새로운 헤어스타일로 자신감이 생겼어요.',
+    image: '/profile-woman.png',
+  },
+  {
+    name: '이준호',
+    role: '학생',
+    rating: 5,
+    comment: '상담부터 시술까지 전문적이었고 결과도 만족합니다. 계속 올 것 같아요!',
+    image: '/profile-man.png',
+  },
+  {
+    name: '박소연',
+    role: '프리랜서',
+    rating: 5,
+    comment: '매번 새로운 스타일로 변신하는데 항상 잘 나와요. UNIHAIR이 최고!',
+    image: '/profile-woman.png',
+  },
+]
+
+export default function Reviews() {
+  return (
+    <section id="reviews" className="py-16 sm:py-24 bg-secondary/10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4 text-balance">
+            고객 후기
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            실제 고객님들의 만족한 모습을 보세요
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {reviews.map((review, index) => (
+            <div key={index} className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition">
+              <div className="flex items-center gap-4 mb-4">
+                <img
+                  src={review.image || "/placeholder.svg"}
+                  alt={review.name}
+                  className="w-14 h-14 rounded-full object-cover"
+                />
+                <div>
+                  <p className="font-semibold text-foreground">{review.name}</p>
+                  <p className="text-sm text-muted-foreground">{review.role}</p>
+                </div>
+              </div>
+              <div className="flex gap-1 mb-4">
+                {Array(review.rating).fill(0).map((_, i) => (
+                  <Star key={i} size={16} className="fill-primary text-primary" />
+                ))}
+              </div>
+              <p className="text-muted-foreground leading-relaxed">{review.comment}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* SNS Links */}
+        <div className="mt-16 pt-8 border-t border-border">
+          <p className="text-center text-muted-foreground mb-6">더 많은 후기와 스타일을 보세요</p>
+          <div className="flex justify-center gap-6">
+            <a href="#" className="px-6 py-3 bg-foreground text-background rounded-lg font-semibold hover:opacity-90 transition">
+              Instagram
+            </a>
+            <a href="#" className="px-6 py-3 bg-foreground text-background rounded-lg font-semibold hover:opacity-90 transition">
+              Naver Blog
+            </a>
+            <a href="#" className="px-6 py-3 bg-foreground text-background rounded-lg font-semibold hover:opacity-90 transition">
+              Kakao Story
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
