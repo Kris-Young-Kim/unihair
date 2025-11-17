@@ -3,7 +3,11 @@
 import { useAtom } from 'jotai'
 import { bookingModalOpen } from '@/lib/atoms'
 import { Calendar } from 'lucide-react'
-import { trackBookingButtonClick, trackBookingModalOpen } from '@/lib/analytics'
+import {
+  trackBookingButtonClick,
+  trackBookingModalOpen,
+  trackViewCollections,
+} from '@/lib/analytics'
 
 export default function BookingFloatingButton() {
   const [, setOpen] = useAtom(bookingModalOpen)
@@ -11,6 +15,7 @@ export default function BookingFloatingButton() {
   const handleClick = () => {
     // GA4 이벤트 추적
     trackBookingButtonClick('floating_button', 'any')
+    trackViewCollections('floating_button', 'any')
     trackBookingModalOpen('floating_button')
     setOpen(true)
   }

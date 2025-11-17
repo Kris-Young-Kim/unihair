@@ -2,7 +2,11 @@
 
 import { useAtom } from 'jotai'
 import { bookingModalOpen } from '@/lib/atoms'
-import { trackBookingButtonClick, trackBookingModalOpen } from '@/lib/analytics'
+import {
+  trackBookingButtonClick,
+  trackBookingModalOpen,
+  trackViewCollections,
+} from '@/lib/analytics'
 
 interface BookingButtonProps {
   className?: string
@@ -15,6 +19,7 @@ export default function BookingButton({ className = '', location = 'hero' }: Boo
   const handleClick = () => {
     // GA4 이벤트 추적
     trackBookingButtonClick(location, location)
+    trackViewCollections(location, location)
     trackBookingModalOpen(location)
     setOpen(true)
   }

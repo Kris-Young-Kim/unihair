@@ -124,6 +124,22 @@ export const trackBookingButtonClick = (
 }
 
 /**
+ * 예약 CTA 클릭 시 컬렉션 뷰 이벤트 추적
+ *
+ * @param buttonLocation - 버튼 위치
+ * @param pageSection - 페이지 섹션
+ */
+export const trackViewCollections = (
+  buttonLocation: string,
+  pageSection?: string
+): void => {
+  trackEvent('view_collections', {
+    button_location: buttonLocation,
+    page_section: pageSection,
+  })
+}
+
+/**
  * 예약 모달 열기 이벤트 추적
  *
  * @param triggerSource - 모달을 연 버튼 위치
