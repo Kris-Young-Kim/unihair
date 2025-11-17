@@ -15,11 +15,19 @@
   - [x] 예약 생성 Server Action 구현 (`actions/create-booking.ts`)
   - [x] 예약 모달 Server Action 연동 및 UX 개선
   - [x] Toast 알림 시스템 연동 (`app/layout.tsx`)
+- [x] 콘텐츠 및 UI 개선 (Phase 2)
+  - [x] 서비스 섹션 보강 (케어 서비스 추가, 상세 설명 및 소요시간)
+  - [x] 팀 섹션 개선 (시술 철학 추가, 이미지 최적화)
+  - [x] 리뷰 섹션 개선 (출처 및 날짜 추가, SNS 링크 업데이트)
+  - [x] FAQ 섹션 확장 (5개 → 11개)
+  - [x] 이벤트 섹션 구조화 및 동적 처리
+  - [x] 이미지 최적화 (priority, sizes 속성 추가)
+  - [x] PRD 컬러 팔레트 반영
 
 ### 진행 중/미완료 작업
 
 - [x] 예약 시스템 백엔드 연동 (Google Spreadsheet) - 완료
-- [ ] 실제 콘텐츠 반영 및 최적화
+- [x] 실제 콘텐츠 반영 및 최적화 - 완료
 - [ ] SEO 및 성능 최적화
 - [ ] 분석 도구 연동
 
@@ -69,24 +77,40 @@
 
 ### 2.1 실제 콘텐츠 반영
 
-- [ ] `components/services.tsx`: 서비스 설명 보강 (PRD 기준)
-- [ ] `components/team.tsx`: 실제 스타일리스트 정보 반영
-- [ ] `components/reviews.tsx`: 실제 고객 리뷰 데이터 추가
-- [ ] `components/faq.tsx`: FAQ 내용 보강 (PRD 기준)
-- [ ] `components/event.tsx`: 이벤트/프로모션 정보 업데이트
+- [x] `components/services.tsx`: 서비스 설명 보강 (PRD 기준)
+  - [x] 케어 서비스 추가
+  - [x] 각 서비스별 상세 설명 및 소요시간 정보 추가
+  - [x] 4개 서비스 그리드 레이아웃으로 변경
+- [x] `components/team.tsx`: 실제 스타일리스트 정보 반영
+  - [x] 각 스타일리스트의 시술 철학 추가
+  - [x] 이미지 최적화 (sizes 속성 추가)
+- [x] `components/reviews.tsx`: 실제 고객 리뷰 데이터 추가
+  - [x] 리뷰 출처(네이버/카카오/구글) 및 날짜 추가
+  - [x] SNS 링크를 실제 링크로 업데이트 (placeholder 제거)
+  - [x] img 태그를 Next.js Image 컴포넌트로 변경
+- [x] `components/faq.tsx`: FAQ 내용 보강 (PRD 기준)
+  - [x] FAQ 5개 → 11개로 확장
+  - [x] 시술 소요시간, 제품/브랜드, 매장 안내, 예약 변경/취소, 결제 방법 등 추가
+- [x] `components/event.tsx`: 이벤트/프로모션 정보 업데이트
+  - [x] 이벤트 정보를 객체로 구조화
+  - [x] 이벤트 기간 확인 로직 추가
+  - [x] 비활성화 시 섹션 숨김 처리
 
 ### 2.2 이미지 최적화
 
-- [ ] 이미지 WebP 포맷 변환
-- [ ] Next.js Image 컴포넌트 최적화 (priority, sizes 속성)
-- [ ] Lazy loading 적용
+- [x] 이미지 WebP 포맷 변환 (Next.js 자동 변환 활용)
+- [x] Next.js Image 컴포넌트 최적화 (priority, sizes 속성)
+  - [x] Hero 섹션 이미지에 priority, sizes, quality 속성 추가
+  - [x] Team 섹션 이미지에 sizes 속성 추가
+  - [x] Reviews 섹션 img 태그를 Image 컴포넌트로 변경
+- [x] Lazy loading 적용 (Next.js Image 기본 제공)
 
 ### 2.3 디자인 시스템 정리
 
-- [ ] PRD 컬러 팔레트 반영 (`app/globals.css`)
-  - Primary: #F8E8E0 (라이트 핑크)
-  - Secondary: #8B6C63 (브라운)
-  - Accent: #E9C9B8 (베이지)
+- [x] PRD 컬러 팔레트 반영 (`app/globals.css`)
+  - [x] Primary: #F8E8E0 (라이트 핑크) → oklch(0.95 0.02 50)
+  - [x] Secondary: #8B6C63 (브라운) → oklch(0.50 0.03 30)
+  - [x] Accent: #E9C9B8 (베이지) → oklch(0.85 0.04 50)
 - [ ] Pretendard 폰트 적용 (현재 Geist 사용 중, 선택사항)
 
 ---

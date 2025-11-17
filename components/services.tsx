@@ -1,6 +1,6 @@
 'use client'
 
-import { Scissors, Sparkles, Waves } from 'lucide-react'
+import { Scissors, Sparkles, Waves, Heart } from 'lucide-react'
 import BookingButton from './booking-button'
 
 const services = [
@@ -8,16 +8,29 @@ const services = [
     icon: Scissors,
     title: '헤어컷',
     description: '당신의 얼굴형과 분위기에 맞는 트렌디한 헤어컷으로 이미지를 완성하세요.',
+    details: '전문 스타일리스트의 1:1 맞춤 상담을 통해 최적의 헤어스타일을 제안해드립니다.',
+    duration: '약 60-90분',
   },
   {
     icon: Sparkles,
     title: '헤어 컬러',
     description: '고급 헤어 염료로 생생한 발색과 건강한 머리결을 동시에 만족시킵니다.',
+    details: '자연스러운 톤온톤부터 볼드한 컬러까지, 원하시는 스타일을 완벽하게 구현합니다.',
+    duration: '약 120-180분',
   },
   {
     icon: Waves,
     title: '매직/펌',
     description: '당신의 헤어타입에 맞는 매직과 펌으로 자연스러운 스타일을 구현합니다.',
+    details: '손상 최소화 제품을 사용하여 건강한 머리결을 유지하면서 원하는 스타일을 연출합니다.',
+    duration: '약 120-150분',
+  },
+  {
+    icon: Heart,
+    title: '헤어 케어',
+    description: '전문적인 트리트먼트와 케어로 건강하고 윤기 있는 머리결을 관리해드립니다.',
+    details: '두피 진단부터 맞춤 케어까지, 머리카락과 두피 건강을 종합적으로 관리합니다.',
+    duration: '약 60-90분',
   },
 ]
 
@@ -34,7 +47,7 @@ export default function Services() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {services.map((service, index) => {
             const Icon = service.icon
             return (
@@ -48,9 +61,19 @@ export default function Services() {
                 <h3 className="text-xl font-bold text-foreground mb-3">
                   {service.title}
                 </h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed mb-3">
                   {service.description}
                 </p>
+                {service.details && (
+                  <p className="text-sm text-muted-foreground/80 leading-relaxed mb-3">
+                    {service.details}
+                  </p>
+                )}
+                {service.duration && (
+                  <p className="text-xs text-primary font-semibold mt-4">
+                    소요시간: {service.duration}
+                  </p>
+                )}
               </div>
             )
           })}

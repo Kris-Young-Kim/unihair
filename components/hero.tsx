@@ -35,6 +35,9 @@ export default function Hero() {
               alt="UNIHAIR 매장 전경"
               fill
               className="object-cover"
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
+              quality={90}
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent"></div>
           </div>
