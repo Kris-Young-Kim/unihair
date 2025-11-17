@@ -50,10 +50,12 @@ export async function getSheetsClient() {
     throw new Error('GOOGLE_PRIVATE_KEY 환경 변수가 설정되지 않았습니다.')
   }
 
+  const normalizedKey = normalizePrivateKey(PRIVATE_KEY)
+
   // JWT 클라이언트 생성
   const auth = new google.auth.JWT({
     email: SERVICE_ACCOUNT_EMAIL,
-    key: PRIVATE_KEY.replace(/\\n/g, '\n'), // 환경 변수에서 \n을 실제 줄바꿈으로 변환
+    key: normalizedKey,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   })
 
@@ -148,6 +150,13 @@ export async function appendBookingRow(bookingData: {
         }
       }
 
+      if (error.message.includes('DECODER routines') || error.message.includes('unsupported')) {
+        return {
+          success: false,
+          error: 'Google 서비스 계정 비밀키 형식이 올바르지 않습니다. 환경 변수를 다시 확인해주세요.',
+        }
+      }
+
       return {
         success: false,
         error: error.message || '예약 저장 중 오류가 발생했습니다.',
@@ -159,5 +168,19 @@ export async function appendBookingRow(bookingData: {
       error: '예약 저장 중 알 수 없는 오류가 발생했습니다.',
     }
   }
+}
+
+function normalizePrivateKey(key: string) {
+  let sanitized = key.trim()
+
+  // Windows 환경에서 쌍따옴표가 포함될 수 있으므로 제거
+  if (sanitized.startsWith('"') && sanitized.endsWith('"')) {
+    sanitized = sanitized.slice(1, -1)
+  }
+
+  // \n, \r 이스케이프를 실제 줄바꿈으로 변환
+  sanitized = sanitized.replace(/\\r/g, '\r').replace(/\\n/g, '\n')
+
+  return sanitized
 }
 
