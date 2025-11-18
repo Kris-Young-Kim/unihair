@@ -57,17 +57,31 @@ export default function BookingModal() {
     setIsSubmitting(true)
 
     // GA4: 폼 제출 이벤트 추적
+    console.group('[예약 모달] 폼 제출 시작')
+    console.log('제출 데이터:', formData)
+    console.log('서비스:', formData.service)
+    console.log('날짜:', formData.date)
+    console.log('시간:', formData.time)
+    console.log('이름:', formData.name)
+    console.log('연락처:', formData.phone)
+    console.groupEnd()
+
     trackBookingFormSubmit(formData.service, formData.date, formData.time)
 
     try {
-      console.group('[예약 모달] 폼 제출 시작')
-      console.log('제출 데이터:', formData)
 
       // Server Action 호출
       const result = await createBooking(formData)
 
       if (result.success) {
-        console.log('[예약 모달] 예약 성공')
+        console.group('[예약 모달] 예약 성공')
+        console.log('예약 완료:', {
+          service: formData.service,
+          date: formData.date,
+          time: formData.time,
+          name: formData.name,
+        })
+        console.log('성공 메시지:', result.message)
         console.groupEnd()
 
         // GA4: 폼 제출 성공 이벤트 추적 (전환 이벤트)

@@ -187,6 +187,84 @@ export const trackBookingModalOpen = (triggerSource: string): void => {
 }
 
 /**
+ * 일반 폼 제출 이벤트 추적
+ *
+ * @param formType - 폼 타입 (예: 'booking', 'consultation', 'inquiry')
+ * @param formData - 폼 데이터 (선택사항)
+ */
+export const trackFormSubmit = (
+  formType: string,
+  formData?: Record<string, any>
+): void => {
+  console.group('[Form Submit]')
+  console.log('Form Type:', formType)
+  console.log('Form Data:', formData || {})
+  console.log('Time:', new Date().toISOString())
+  console.groupEnd()
+
+  trackEvent('form_submit', {
+    form_type: formType,
+    ...(formData || {}),
+    page_path: typeof window !== 'undefined' ? window.location.pathname : '',
+  })
+}
+
+/**
+ * 일반 폼 제출 완료 이벤트 추적 (전환 이벤트)
+ *
+ * @param formType - 폼 타입 (예: 'booking', 'consultation', 'inquiry')
+ * @param formData - 폼 데이터 (선택사항)
+ * @param value - 전환 가치 (선택사항)
+ */
+export const trackFormSubmitSuccess = (
+  formType: string,
+  formData?: Record<string, any>,
+  value?: number
+): void => {
+  console.group('[Form Submit Success]')
+  console.log('Form Type:', formType)
+  console.log('Form Data:', formData || {})
+  console.log('Value:', value || 1)
+  console.log('Time:', new Date().toISOString())
+  console.groupEnd()
+
+  trackEvent('form_submit_success', {
+    form_type: formType,
+    value: value || 1,
+    currency: 'KRW',
+    ...(formData || {}),
+    page_path: typeof window !== 'undefined' ? window.location.pathname : '',
+  })
+}
+
+/**
+ * 일반 폼 제출 실패 이벤트 추적
+ *
+ * @param formType - 폼 타입 (예: 'booking', 'consultation', 'inquiry')
+ * @param errorMessage - 에러 메시지
+ * @param formData - 폼 데이터 (선택사항)
+ */
+export const trackFormSubmitError = (
+  formType: string,
+  errorMessage: string,
+  formData?: Record<string, any>
+): void => {
+  console.group('[Form Submit Error]')
+  console.log('Form Type:', formType)
+  console.log('Error:', errorMessage)
+  console.log('Form Data:', formData || {})
+  console.log('Time:', new Date().toISOString())
+  console.groupEnd()
+
+  trackEvent('form_submit_error', {
+    form_type: formType,
+    error_message: errorMessage,
+    ...(formData || {}),
+    page_path: typeof window !== 'undefined' ? window.location.pathname : '',
+  })
+}
+
+/**
  * 예약 폼 제출 이벤트 추적
  *
  * @param serviceType - 선택한 서비스
@@ -198,6 +276,13 @@ export const trackBookingFormSubmit = (
   bookingDate: string,
   bookingTime: string
 ): void => {
+  trackFormSubmit('booking', {
+    service_type: serviceType,
+    booking_date: bookingDate,
+    booking_time: bookingTime,
+  })
+  
+  // 기존 이벤트도 유지 (하위 호환성)
   trackEvent('booking_form_submit', {
     service_type: serviceType,
     booking_date: bookingDate,
@@ -219,6 +304,13 @@ export const trackBookingFormSubmitSuccess = (
   bookingTime: string,
   value?: number
 ): void => {
+  trackFormSubmitSuccess('booking', {
+    service_type: serviceType,
+    booking_date: bookingDate,
+    booking_time: bookingTime,
+  }, value)
+  
+  // 기존 이벤트도 유지 (하위 호환성)
   trackEvent('booking_form_submit_success', {
     service_type: serviceType,
     booking_date: bookingDate,
@@ -238,6 +330,11 @@ export const trackBookingFormSubmitError = (
   errorMessage: string,
   serviceType?: string
 ): void => {
+  trackFormSubmitError('booking', errorMessage, {
+    service_type: serviceType,
+  })
+  
+  // 기존 이벤트도 유지 (하위 호환성)
   trackEvent('booking_form_submit_error', {
     error_message: errorMessage,
     service_type: serviceType,
