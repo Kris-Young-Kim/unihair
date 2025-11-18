@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic'
 import Header from '@/components/header'
 import Hero from '@/components/hero'
+import ScrollDepthTracker from '@/components/scroll-depth-tracker'
 
 const Services = dynamic(() => import('@/components/services'), {
   loading: () => <SectionFallback title="서비스 정보를 준비중입니다." />,
@@ -43,6 +44,7 @@ const BookingModal = dynamic(() => import('@/components/booking-modal'))
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <ScrollDepthTracker thresholds={[25, 50, 75, 90, 100]} trackFooter={true} />
       <Header />
       <BookingFloatingButton />
       <Hero />

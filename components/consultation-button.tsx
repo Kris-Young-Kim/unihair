@@ -16,6 +16,7 @@
 
 'use client'
 
+import { useRef } from 'react'
 import { trackConsultationButtonClick } from '@/lib/analytics'
 
 interface ConsultationButtonProps {
@@ -31,15 +32,20 @@ export default function ConsultationButton({
   action = 'scroll',
   phoneNumber = '02-1234-5678',
 }: ConsultationButtonProps) {
-  const handleClick = () => {
-    // GA4 이벤트 추적
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // GA4 이벤트 추적 (자세한 위치 정보 포함)
+    const buttonElement = buttonRef.current || (e.currentTarget as HTMLElement)
+    
     console.group('[Consultation Button Click]')
     console.log('Location:', location)
     console.log('Action:', action)
+    console.log('Button Element:', buttonElement)
     console.log('Time:', new Date().toISOString())
     console.groupEnd()
 
-    trackConsultationButtonClick(location, action)
+    trackConsultationButtonClick(location, action, buttonElement)
 
     if (action === 'call') {
       // 전화 연결
@@ -61,6 +67,7 @@ export default function ConsultationButton({
 
   return (
     <button
+      ref={buttonRef}
       onClick={handleClick}
       className={`px-8 py-3 border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary/5 transition ${className}`}
     >

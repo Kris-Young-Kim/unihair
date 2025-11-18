@@ -122,18 +122,40 @@ export const trackPageView = (pagePath: string, pageTitle?: string): void => {
 }
 
 /**
- * 예약 버튼 클릭 이벤트 추적
+ * 예약 버튼 클릭 이벤트 추적 (자세한 위치 정보 포함)
  *
  * @param buttonLocation - 버튼 위치 (예: 'header', 'hero', 'cta')
  * @param pageSection - 현재 페이지 섹션 (선택사항)
+ * @param buttonElement - 버튼 DOM 요소 (선택사항, 위치 정보 수집용)
  */
 export const trackBookingButtonClick = (
   buttonLocation: string,
-  pageSection?: string
+  pageSection?: string,
+  buttonElement?: HTMLElement | null
 ): void => {
+  const positionDetails = getButtonPositionDetails(buttonElement || null)
+  const sectionInfo = getCurrentSectionInfo()
+
   trackEvent('booking_button_click', {
     button_location: buttonLocation,
-    page_section: pageSection,
+    page_section: pageSection || sectionInfo.current_section,
+    // 자세한 위치 정보
+    viewport_x: positionDetails.viewport_x,
+    viewport_y: positionDetails.viewport_y,
+    viewport_center_x: positionDetails.viewport_center_x,
+    viewport_center_y: positionDetails.viewport_center_y,
+    scroll_y: positionDetails.scroll_y,
+    scroll_percentage: positionDetails.scroll_percentage,
+    is_visible: positionDetails.is_visible,
+    button_width: positionDetails.button_width,
+    button_height: positionDetails.button_height,
+    // 섹션 정보
+    current_section: sectionInfo.current_section,
+    sections_visible: sectionInfo.sections_visible,
+    // 추가 정보
+    viewport_width: typeof window !== 'undefined' ? window.innerWidth : 0,
+    viewport_height: typeof window !== 'undefined' ? window.innerHeight : 0,
+    page_path: typeof window !== 'undefined' ? window.location.pathname : '',
   })
 }
 
@@ -239,18 +261,218 @@ export const trackSectionView = (
 }
 
 /**
- * 상담하기 버튼 클릭 이벤트 추적
+ * 스크롤 깊이 이벤트 추적
+ *
+ * 사용자가 페이지의 특정 깊이(임계값)에 도달했을 때 추적합니다.
+ *
+ * @param threshold - 도달한 임계값 (%)
+ * @param scrollPercentage - 현재 스크롤 깊이 (%)
+ * @param scrollY - 현재 스크롤 위치 (픽셀)
+ * @param pageHeight - 전체 페이지 높이 (픽셀)
+ *
+ * @example
+ * trackScrollDepth(50, 52, 1200, 5000) // 50% 임계값 도달
+ */
+export const trackScrollDepth = (
+  threshold: number,
+  scrollPercentage: number,
+  scrollY: number,
+  pageHeight: number
+): void => {
+  const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 0
+
+  trackEvent('scroll_depth', {
+    threshold: threshold,
+    scroll_percentage: scrollPercentage,
+    scroll_y: Math.round(scrollY),
+    page_height: pageHeight,
+    viewport_height: viewportHeight,
+    page_path: typeof window !== 'undefined' ? window.location.pathname : '',
+    // 추가 정보
+    threshold_label: `${threshold}%`,
+    is_midpoint: threshold === 50,
+    is_almost_end: threshold >= 90,
+    is_end: threshold === 100,
+  })
+}
+
+/**
+ * 푸터 도달 이벤트 추적
+ *
+ * 사용자가 페이지 끝(푸터)까지 스크롤했을 때 추적합니다.
+ *
+ * @param scrollPercentage - 현재 스크롤 깊이 (%)
+ * @param scrollY - 현재 스크롤 위치 (픽셀)
+ * @param pageHeight - 전체 페이지 높이 (픽셀)
+ *
+ * @example
+ * trackFooterReach(98, 4800, 5000) // 푸터 도달
+ */
+export const trackFooterReach = (
+  scrollPercentage: number,
+  scrollY: number,
+  pageHeight: number
+): void => {
+  const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 0
+
+  trackEvent('footer_reach', {
+    scroll_percentage: scrollPercentage,
+    scroll_y: Math.round(scrollY),
+    page_height: pageHeight,
+    viewport_height: viewportHeight,
+    page_path: typeof window !== 'undefined' ? window.location.pathname : '',
+    // 추가 정보
+    is_complete_read: scrollPercentage >= 90,
+    time_to_footer: Date.now(), // 타임스탬프 (나중에 계산 가능)
+  })
+}
+
+/**
+ * 버튼의 자세한 위치 정보 수집
+ *
+ * @param buttonElement - 버튼 DOM 요소
+ * @returns 버튼 위치 정보 객체
+ */
+export const getButtonPositionDetails = (buttonElement: HTMLElement | null) => {
+  if (!buttonElement || typeof window === 'undefined') {
+    return {
+      viewport_x: 0,
+      viewport_y: 0,
+      viewport_center_x: 0,
+      viewport_center_y: 0,
+      scroll_y: 0,
+      page_height: 0,
+      scroll_percentage: 0,
+      is_visible: false,
+      button_width: 0,
+      button_height: 0,
+    }
+  }
+
+  const rect = buttonElement.getBoundingClientRect()
+  const scrollY = window.scrollY || window.pageYOffset
+  const pageHeight = document.documentElement.scrollHeight
+  const viewportHeight = window.innerHeight
+  const scrollPercentage = Math.round((scrollY / (pageHeight - viewportHeight)) * 100)
+
+  // 버튼 중심점 계산
+  const centerX = rect.left + rect.width / 2
+  const centerY = rect.top + rect.height / 2
+
+  // 뷰포트 내 위치 비율 (0-100)
+  const viewportXPercent = Math.round((centerX / window.innerWidth) * 100)
+  const viewportYPercent = Math.round((centerY / window.innerHeight) * 100)
+
+  // 버튼이 뷰포트에 보이는지 확인
+  const isVisible =
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= viewportHeight &&
+    rect.right <= window.innerWidth
+
+  return {
+    viewport_x: Math.round(rect.left),
+    viewport_y: Math.round(rect.top),
+    viewport_center_x: viewportXPercent,
+    viewport_center_y: viewportYPercent,
+    scroll_y: Math.round(scrollY),
+    page_height: pageHeight,
+    scroll_percentage: scrollPercentage,
+    is_visible: isVisible,
+    button_width: Math.round(rect.width),
+    button_height: Math.round(rect.height),
+  }
+}
+
+/**
+ * 현재 페이지 섹션 정보 수집
+ *
+ * @returns 현재 보이는 섹션 정보
+ */
+export const getCurrentSectionInfo = () => {
+  if (typeof window === 'undefined') {
+    return {
+      current_section: 'unknown',
+      sections_visible: [],
+    }
+  }
+
+  const sections = ['hero', 'services', 'consultation', 'reviews', 'team', 'faq', 'event', 'location']
+  const visibleSections: string[] = []
+  const scrollY = window.scrollY || window.pageYOffset
+  const viewportHeight = window.innerHeight
+
+  sections.forEach((sectionId) => {
+    const element = document.getElementById(sectionId) || document.querySelector(`[id*="${sectionId}"]`)
+    if (element) {
+      const rect = element.getBoundingClientRect()
+      // 섹션이 뷰포트에 일부라도 보이는지 확인
+      if (rect.top < viewportHeight && rect.bottom > 0) {
+        visibleSections.push(sectionId)
+      }
+    }
+  })
+
+  // 가장 많이 보이는 섹션 찾기
+  let currentSection = 'unknown'
+  let maxVisibleArea = 0
+
+  visibleSections.forEach((sectionId) => {
+    const element = document.getElementById(sectionId) || document.querySelector(`[id*="${sectionId}"]`)
+    if (element) {
+      const rect = element.getBoundingClientRect()
+      const visibleTop = Math.max(0, rect.top)
+      const visibleBottom = Math.min(viewportHeight, rect.bottom)
+      const visibleArea = visibleBottom - visibleTop
+
+      if (visibleArea > maxVisibleArea) {
+        maxVisibleArea = visibleArea
+        currentSection = sectionId
+      }
+    }
+  })
+
+  return {
+    current_section: currentSection,
+    sections_visible: visibleSections.join(','),
+  }
+}
+
+/**
+ * 상담하기 버튼 클릭 이벤트 추적 (자세한 위치 정보 포함)
  *
  * @param buttonLocation - 버튼 위치 (예: 'header', 'hero', 'cta')
  * @param action - 액션 타입 ('scroll' | 'call')
+ * @param buttonElement - 버튼 DOM 요소 (선택사항, 위치 정보 수집용)
  */
 export const trackConsultationButtonClick = (
   buttonLocation: string,
-  action: 'scroll' | 'call' = 'scroll'
+  action: 'scroll' | 'call' = 'scroll',
+  buttonElement?: HTMLElement | null
 ): void => {
+  const positionDetails = getButtonPositionDetails(buttonElement || null)
+  const sectionInfo = getCurrentSectionInfo()
+
   trackEvent('consultation_button_click', {
     button_location: buttonLocation,
     action_type: action,
+    // 자세한 위치 정보
+    viewport_x: positionDetails.viewport_x,
+    viewport_y: positionDetails.viewport_y,
+    viewport_center_x: positionDetails.viewport_center_x,
+    viewport_center_y: positionDetails.viewport_center_y,
+    scroll_y: positionDetails.scroll_y,
+    scroll_percentage: positionDetails.scroll_percentage,
+    is_visible: positionDetails.is_visible,
+    button_width: positionDetails.button_width,
+    button_height: positionDetails.button_height,
+    // 섹션 정보
+    current_section: sectionInfo.current_section,
+    sections_visible: sectionInfo.sections_visible,
+    // 추가 정보
+    viewport_width: typeof window !== 'undefined' ? window.innerWidth : 0,
+    viewport_height: typeof window !== 'undefined' ? window.innerHeight : 0,
+    page_path: typeof window !== 'undefined' ? window.location.pathname : '',
   })
 }
 
