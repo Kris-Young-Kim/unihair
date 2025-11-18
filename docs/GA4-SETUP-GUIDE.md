@@ -79,6 +79,9 @@ unihair/
 ```bash
 # Google Analytics 4
 NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+
+# Google Tag Manager
+NEXT_PUBLIC_GTM_ID=GTM-XXXXXXXXXX
 ```
 
 **예시:**
@@ -86,9 +89,16 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 ```bash
 # Google Analytics 4
 NEXT_PUBLIC_GA_MEASUREMENT_ID=G-ABC123DEF4
+
+# Google Tag Manager
+NEXT_PUBLIC_GTM_ID=GTM-PSV5HXQT
 ```
 
-⚠️ **주의:** `G-XXXXXXXXXX`를 실제 측정 ID로 교체하세요.
+⚠️ **주의:**
+
+- `G-XXXXXXXXXX`를 실제 GA4 측정 ID로 교체하세요.
+- `GTM-XXXXXXXXXX`를 실제 GTM 컨테이너 ID로 교체하세요.
+- GTM ID가 없으면 기본값 `GTM-PSV5HXQT`가 사용됩니다.
 
 ### 2.3 개발 서버 재시작
 
