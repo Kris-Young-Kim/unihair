@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import BookingButton from './booking-button'
+import ConsultationButton from './consultation-button'
 import { useScrollTracking } from '@/hooks/use-scroll-tracking'
 
 export default function Hero() {
@@ -24,10 +25,8 @@ export default function Hero() {
               UNIHAIR는 트렌디한 헤어스타일과 전문적인 시술로 당신의 매력을 더해줍니다. 숙련된 스타일리스트와 함께 1:1 맞춤상담으로 완벽한 이미지를 만들어보세요.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <BookingButton className="w-full sm:w-auto" />
-              <button className="w-full sm:w-auto px-8 py-3 border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary/5 transition">
-                더 알아보기
-              </button>
+              <BookingButton className="w-full sm:w-auto" location="hero" />
+              <ConsultationButton className="w-full sm:w-auto" location="hero" action="scroll" />
             </div>
           </div>
 

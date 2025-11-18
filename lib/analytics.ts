@@ -238,3 +238,19 @@ export const trackSectionView = (
   })
 }
 
+/**
+ * 상담하기 버튼 클릭 이벤트 추적
+ *
+ * @param buttonLocation - 버튼 위치 (예: 'header', 'hero', 'cta')
+ * @param action - 액션 타입 ('scroll' | 'call')
+ */
+export const trackConsultationButtonClick = (
+  buttonLocation: string,
+  action: 'scroll' | 'call' = 'scroll'
+): void => {
+  trackEvent('consultation_button_click', {
+    button_location: buttonLocation,
+    action_type: action,
+  })
+}
+

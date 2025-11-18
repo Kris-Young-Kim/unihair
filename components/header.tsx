@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
+import ConsultationButton from './consultation-button'
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
@@ -24,6 +25,7 @@ export default function Header() {
             <a href="#reviews" className="text-sm text-foreground hover:text-primary transition">후기</a>
             <a href="#team" className="text-sm text-foreground hover:text-primary transition">스타일리스트</a>
             <a href="#location" className="text-sm text-foreground hover:text-primary transition">위치</a>
+            <ConsultationButton className="text-sm px-4 py-1.5 text-xs" location="header" action="scroll" />
           </nav>
 
           {/* Mobile menu button */}
@@ -42,6 +44,9 @@ export default function Header() {
             <a href="#reviews" className="text-sm text-foreground hover:text-primary transition py-2">후기</a>
             <a href="#team" className="text-sm text-foreground hover:text-primary transition py-2">스타일리스트</a>
             <a href="#location" className="text-sm text-foreground hover:text-primary transition py-2">위치</a>
+            <div className="pt-2">
+              <ConsultationButton className="w-full" location="header_mobile" action="scroll" />
+            </div>
           </nav>
         )}
       </div>
