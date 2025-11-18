@@ -82,6 +82,7 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 ```
 
 **예시:**
+
 ```bash
 # Google Analytics 4
 NEXT_PUBLIC_GA_MEASUREMENT_ID=G-ABC123DEF4
@@ -120,6 +121,7 @@ pnpm dev
 ### 3.4 전환 이벤트로 표시
 
 1. `booking_form_submit_success` 이벤트 찾기
+
    - 이벤트가 전송된 후에만 목록에 나타납니다
    - 테스트를 위해 실제로 예약 폼을 제출해보세요
    - 이벤트가 나타나기까지 몇 분 정도 걸릴 수 있습니다
@@ -192,26 +194,29 @@ pnpm dev
 
 ### 5.3 주요 추적 이벤트 목록
 
-| 이벤트 이름 | 설명 | 전환 여부 |
-|------------|------|----------|
-| `booking_button_click` | 예약 버튼 클릭 | ❌ |
-| `booking_modal_open` | 예약 모달 열기 | ❌ |
-| `booking_form_submit` | 예약 폼 제출 시도 | ❌ |
-| `booking_form_submit_success` | 예약 완료 | ✅ **전환** |
-| `booking_form_submit_error` | 예약 실패 | ❌ |
-| `section_view` | 섹션 뷰 (hero, services, team, reviews, faq, location) | ❌ |
+| 이벤트 이름                   | 설명                                                   | 전환 여부   |
+| ----------------------------- | ------------------------------------------------------ | ----------- |
+| `booking_button_click`        | 예약 버튼 클릭                                         | ❌          |
+| `booking_modal_open`          | 예약 모달 열기                                         | ❌          |
+| `booking_form_submit`         | 예약 폼 제출 시도                                      | ❌          |
+| `booking_form_submit_success` | 예약 완료                                              | ✅ **전환** |
+| `booking_form_submit_error`   | 예약 실패                                              | ❌          |
+| `section_view`                | 섹션 뷰 (hero, services, team, reviews, faq, location) | ❌          |
 
 ### 5.4 전환율 계산
 
 **전환율 공식:**
+
 ```
 전환율 = (booking_form_submit_success / booking_button_click) × 100
 ```
 
 **목표:**
+
 - PRD 기준: **12% 이상** 달성
 
 **GA4에서 확인 방법:**
+
 1. **"보고서"** → **"전환"** 메뉴
 2. `booking_form_submit_success` 이벤트 선택
 3. 전환율 확인
@@ -246,4 +251,3 @@ pnpm dev
 - [GA4 공식 문서](https://developers.google.com/analytics/devguides/collection/ga4)
 - [GA4 이벤트 가이드](https://developers.google.com/analytics/devguides/collection/ga4/events)
 - [GA4 전환 설정 가이드](https://support.google.com/analytics/answer/9267568)
-

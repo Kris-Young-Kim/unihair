@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from '@/components/ui/toaster'
 import Script from 'next/script'
+import GAPageViewTracker from '@/components/ga-pageview-tracker'
 import './globals.css'
 
 // 사이트 기본 URL (환경 변수 또는 실제 도메인으로 교체 필요)
@@ -220,12 +221,14 @@ export default function RootLayout({
               gtag('js', new Date());
               gtag('config', '${gaMeasurementId}', {
                 page_path: window.location.pathname,
+                debug_mode: true,
               });
             `,
           }}
         />
       </head>
       <body className={`font-sans antialiased`}>
+        <GAPageViewTracker />
         {children}
         <Toaster />
         <Analytics />

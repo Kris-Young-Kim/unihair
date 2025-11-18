@@ -68,9 +68,12 @@ export const trackEvent = (
     return
   }
 
-  // GA4 이벤트 전송
+  // GA4 이벤트 전송 (디버그 모드 포함)
   try {
-    window.gtag!('event', eventName, eventParams || {})
+    window.gtag!('event', eventName, {
+      ...(eventParams || {}),
+      debug_mode: true, // 디버그 모드 활성화
+    })
   } catch (error) {
     console.error('[GA4] Error tracking event:', error)
   }
@@ -91,16 +94,27 @@ export const trackPageView = (pagePath: string, pageTitle?: string): void => {
 
   // 개발 환경에서 콘솔 출력
   if (process.env.NODE_ENV === 'development') {
-    console.log('[GA4 PageView]', pagePath, pageTitle || '')
+    console.group('[GA4 PageView]')
+    console.log('Path:', pagePath)
+    console.log('Title:', pageTitle || document.title || '')
+    console.log('Measurement ID:', measurementId)
+    console.log('Debug Mode: Enabled')
+    console.groupEnd()
   }
 
   // GA4가 활성화되어 있지 않으면 종료
-  if (!isGAEnabled()) return
+  if (!isGAEnabled()) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[GA4] GA4 is not enabled. Measurement ID:', measurementId)
+    }
+    return
+  }
 
   try {
     window.gtag!('config', measurementId, {
       page_path: pagePath,
-      page_title: pageTitle,
+      page_title: pageTitle || document.title || '',
+      debug_mode: true, // 디버그 모드 활성화
     })
   } catch (error) {
     console.error('[GA4] Error tracking page view:', error)
