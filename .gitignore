@@ -63,4 +63,13 @@ repomix-output.xml
 # clerk configuration (can include secrets)
 /.clerk/
 
+# Google Cloud Service Account credentials (contains secrets)
+*gamcp*.json
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!components.json
+!next.config.*.json
+
 .vercel

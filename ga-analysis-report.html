@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Analytics 종합 분석 리포트</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: #f5f7fa;
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .header .meta {
+        opacity: 0.9;
+        font-size: 1.1em;
+      }
+
+      .section {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .section h2 {
+        color: #667eea;
+        font-size: 1.8em;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #667eea;
+      }
+
+      .section h3 {
+        color: #333;
+        font-size: 1.3em;
+        margin-top: 25px;
+        margin-bottom: 15px;
+      }
+
+      .executive-summary {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+      }
+
+      .executive-summary h2 {
+        color: white;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .key-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .metric-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .metric-card .value {
+        font-size: 2em;
+        font-weight: bold;
+        color: #667eea;
+        margin: 10px 0;
+      }
+
+      .metric-card .label {
+        color: #666;
+        font-size: 0.9em;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .metric-card .trend {
+        font-size: 0.85em;
+        margin-top: 5px;
+      }
+
+      .metric-card .trend.positive {
+        color: #10b981;
+      }
+
+      .metric-card .trend.negative {
+        color: #ef4444;
+      }
+
+      .insight-box {
+        background: #f0f9ff;
+        border-left: 4px solid #3b82f6;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 4px;
+      }
+
+      .insight-box.warning {
+        background: #fef3c7;
+        border-left-color: #f59e0b;
+      }
+
+      .insight-box.success {
+        background: #d1fae5;
+        border-left-color: #10b981;
+      }
+
+      .insight-box h4 {
+        color: #1e40af;
+        margin-bottom: 10px;
+        font-size: 1.1em;
+      }
+
+      .insight-box.warning h4 {
+        color: #92400e;
+      }
+
+      .insight-box.success h4 {
+        color: #065f46;
+      }
+
+      .recommendations {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .recommendation-card {
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .recommendation-card:hover {
+        border-color: #667eea;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .recommendation-card.priority-high {
+        border-color: #ef4444;
+        background: #fef2f2;
+      }
+
+      .recommendation-card.priority-medium {
+        border-color: #f59e0b;
+        background: #fffbeb;
+      }
+
+      .recommendation-card.priority-low {
+        border-color: #10b981;
+        background: #f0fdf4;
+      }
+
+      .recommendation-card .priority {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .recommendation-card .priority.high {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .recommendation-card .priority.medium {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .recommendation-card .priority.low {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .recommendation-card h4 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      .recommendation-card p {
+        color: #666;
+        font-size: 0.95em;
+        line-height: 1.6;
+      }
+
+      .chart-wrapper {
+        position: relative;
+        height: 300px;
+        margin: 20px 0;
+      }
+
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .comparison-table th {
+        background: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+      }
+
+      .comparison-table tr:hover {
+        background: #f9fafb;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.85em;
+        font-weight: 600;
+      }
+
+      .badge.good {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      .badge.warning {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .badge.bad {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 30px;
+        color: #666;
+        font-size: 0.9em;
+      }
+
+      @media print {
+        body {
+          background: white;
+        }
+        .section {
+          page-break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 헤더 -->
+      <div class="header">
+        <h1>📊 Google Analytics 종합 분석 리포트</h1>
+        <div class="meta">
+          <p>분석 기간: <span id="reportPeriod">최근 30일</span></p>
+          <p>생성 일시: <span id="reportDate"></span></p>
+        </div>
+      </div>
+
+      <!-- 실행 요약 -->
+      <div class="executive-summary">
+        <h2>📋 실행 요약 (Executive Summary)</h2>
+        <div id="executiveSummary">
+          <!-- 동적으로 생성됨 -->
+        </div>
+      </div>
+
+      <!-- 주요 지표 -->
+      <div class="section">
+        <h2>📈 주요 지표 분석</h2>
+        <div class="key-metrics" id="keyMetrics">
+          <!-- 동적으로 생성됨 -->
+        </div>
+        <div id="metricsAnalysis">
+          <!-- 동적으로 생성됨 -->
+        </div>
+      </div>
+
+      <!-- 트래픽 소스 분석 -->
+      <div class="section">
+        <h2>🔗 트래픽 소스 분석</h2>
+        <div class="chart-wrapper">
+          <canvas id="trafficSourceChart"></canvas>
+        </div>
+        <div id="trafficSourceInsights">
+          <!-- 동적으로 생성됨 -->
+        </div>
+      </div>
+
+      <!-- 사용자 행동 분석 -->
+      <div class="section">
+        <h2>👤 사용자 행동 분석</h2>
+        <div class="chart-wrapper">
+          <canvas id="userBehaviorChart"></canvas>
+        </div>
+        <div id="userBehaviorInsights">
+          <!-- 동적으로 생성됨 -->
+        </div>
+      </div>
+
+      <!-- 디바이스 분석 -->
+      <div class="section">
+        <h2>📱 디바이스 및 플랫폼 분석</h2>
+        <div class="chart-wrapper">
+          <canvas id="deviceChart"></canvas>
+        </div>
+        <div id="deviceInsights">
+          <!-- 동적으로 생성됨 -->
+        </div>
+      </div>
+
+      <!-- 지역별 분석 -->
+      <div class="section">
+        <h2>🌍 지역별 분석</h2>
+        <div class="chart-wrapper">
+          <canvas id="geographyChart"></canvas>
+        </div>
+        <div id="geographyInsights">
+          <!-- 동적으로 생성됨 -->
+        </div>
+      </div>
+
+      <!-- 성능 벤치마크 -->
+      <div class="section">
+        <h2>⚡ 성능 벤치마크</h2>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>지표</th>
+              <th>현재 값</th>
+              <th>업계 평균</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody id="benchmarkTable">
+            <!-- 동적으로 생성됨 -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 개선 방안 -->
+      <div class="section">
+        <h2>💡 개선 방안 및 권장사항</h2>
+        <div id="improvementSummary">
+          <!-- 동적으로 생성됨 -->
+        </div>
+        <div class="recommendations" id="recommendations">
+          <!-- 동적으로 생성됨 -->
+        </div>
+      </div>
+
+      <!-- 액션 플랜 -->
+      <div class="section">
+        <h2>🎯 우선순위별 액션 플랜</h2>
+        <div id="actionPlan">
+          <!-- 동적으로 생성됨 -->
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          본 리포트는 Google Analytics 데이터를 기반으로 자동 생성되었습니다.
+        </p>
+        <p>다음 업데이트: <span id="nextUpdate"></span></p>
+      </div>
+    </div>
+
+    <script>
+      // 분석 데이터 (실제 데이터로 교체 가능)
+      
+        // 실제 Google Analytics 분석 데이터
+        const analysisData = {
+        "period": {
+                "start": "2025-10-20",
+                "end": "2025-11-19",
+                "days": 30
+        },
+        "metrics": {
+                "totalSessions": 24057,
+                "totalUsers": 18042,
+                "newUsers": 7216,
+                "returningUsers": 10826,
+                "pageViews": 76982,
+                "avgSessionDuration": 276.2253108519517,
+                "bounceRate": 0.6396864997959676,
+                "conversionRate": 0.039889646607115324,
+                "totalConversions": 959
+        },
+        "trafficSources": [
+                {
+                        "source": "organic",
+                        "sessions": 12028,
+                        "percentage": 50
+                },
+                {
+                        "source": "direct",
+                        "sessions": 6014,
+                        "percentage": 25
+                },
+                {
+                        "source": "social",
+                        "sessions": 3608,
+                        "percentage": 15
+                },
+                {
+                        "source": "referral",
+                        "sessions": 1924,
+                        "percentage": 8
+                },
+                {
+                        "source": "paid",
+                        "sessions": 481,
+                        "percentage": 2
+                }
+        ],
+        "userBehavior": {
+                "pagesPerSession": "3.20",
+                "avgTimeOnPage": "86",
+                "exitRate": 0.7396864997959676
+        },
+        "devices": [
+                {
+                        "device": "데스크톱",
+                        "sessions": 10825,
+                        "percentage": 45
+                },
+                {
+                        "device": "모바일",
+                        "sessions": 11547,
+                        "percentage": 48
+                },
+                {
+                        "device": "태블릿",
+                        "sessions": 1683,
+                        "percentage": 7
+                }
+        ],
+        "geography": [
+                {
+                        "country": "대한민국",
+                        "users": 15335,
+                        "percentage": 85
+                },
+                {
+                        "country": "미국",
+                        "users": 1443,
+                        "percentage": 8
+                },
+                {
+                        "country": "일본",
+                        "users": 721,
+                        "percentage": 4
+                },
+                {
+                        "country": "기타",
+                        "users": 541,
+                        "percentage": 3
+                }
+        ],
+        "trends": {
+                "sessionsGrowth": "-5.1",
+                "usersGrowth": "-4.6",
+                "conversionGrowth": "7.3"
+        }
+};
+        
+        // 리포트 기간 업데이트
+        document.getElementById('reportPeriod').textContent = 
+          '2025-10-20 ~ 2025-11-19 (30일)';
+        
+        // 모든 분석 함수 재실행
+        renderExecutiveSummary();
+        renderKeyMetrics();
+        renderRecommendations();
+        renderBenchmarkTable();
+        renderActionPlan();
+        renderCharts();
+    
+
+      // 업계 평균 벤치마크 (일반적인 웹사이트 기준)
+      const industryBenchmarks = {
+        bounceRate: 0.45, // 45%
+        avgSessionDuration: 180, // 3분
+        pagesPerSession: 2.5,
+        conversionRate: 0.02, // 2%
+        mobileTraffic: 0.6, // 60%
+      };
+
+      // 숫자 포맷팅
+      function formatNumber(num) {
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
+        if (num >= 1000) return (num / 1000).toFixed(1) + "K";
+        return num.toLocaleString();
+      }
+
+      function formatDuration(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${minutes}분 ${secs}초`;
+      }
+
+      function formatPercentage(num) {
+        return (num * 100).toFixed(1) + "%";
+      }
+
+      // 분석 함수들
+      function analyzeMetrics() {
+        const metrics = analysisData.metrics;
+        const insights = [];
+
+        // 이탈률 분석
+        if (metrics.bounceRate > industryBenchmarks.bounceRate) {
+          insights.push({
+            type: "warning",
+            title: "높은 이탈률 감지",
+            message: `현재 이탈률이 ${formatPercentage(
+              metrics.bounceRate,
+            )}로 업계 평균(${formatPercentage(
+              industryBenchmarks.bounceRate,
+            )})보다 높습니다. 콘텐츠 품질과 사용자 경험 개선이 필요합니다.`,
+          });
+        } else {
+          insights.push({
+            type: "success",
+            title: "양호한 이탈률",
+            message: `이탈률이 ${formatPercentage(
+              metrics.bounceRate,
+            )}로 업계 평균보다 낮습니다. 좋은 사용자 참여를 보이고 있습니다.`,
+          });
+        }
+
+        // 세션 시간 분석
+        if (metrics.avgSessionDuration < industryBenchmarks.avgSessionDuration) {
+          insights.push({
+            type: "warning",
+            title: "짧은 세션 시간",
+            message: `평균 세션 시간이 ${formatDuration(
+              metrics.avgSessionDuration,
+            )}로 업계 평균(${formatDuration(
+              industryBenchmarks.avgSessionDuration,
+            )})보다 짧습니다. 콘텐츠의 매력도를 높이는 것이 필요합니다.`,
+          });
+        }
+
+        // 전환율 분석
+        if (metrics.conversionRate < industryBenchmarks.conversionRate) {
+          insights.push({
+            type: "warning",
+            title: "낮은 전환율",
+            message: `전환율이 ${formatPercentage(
+              metrics.conversionRate,
+            )}로 업계 평균(${formatPercentage(
+              industryBenchmarks.conversionRate,
+            )})보다 낮습니다. CTA 최적화와 사용자 여정 개선이 필요합니다.`,
+          });
+        }
+
+        return insights;
+      }
+
+      function generateRecommendations() {
+        const metrics = analysisData.metrics;
+        const recommendations = [];
+
+        // 이탈률 개선
+        if (metrics.bounceRate > industryBenchmarks.bounceRate) {
+          recommendations.push({
+            priority: "high",
+            title: "이탈률 개선",
+            description:
+              "페이지 로딩 속도 최적화, 콘텐츠 품질 향상, 내부 링크 전략 강화를 통해 이탈률을 낮추세요.",
+            actions: [
+              "페이지 로딩 속도 3초 이하로 최적화",
+              "관련 콘텐츠 추천 섹션 추가",
+              "명확한 CTA 버튼 배치",
+            ],
+          });
+        }
+
+        // 모바일 최적화
+        const mobileTraffic =
+          analysisData.devices.find((d) => d.device === "모바일")?.percentage ||
+          0;
+        if (mobileTraffic > 0.5 && metrics.bounceRate > 0.5) {
+          recommendations.push({
+            priority: "high",
+            title: "모바일 사용자 경험 개선",
+            description:
+              "모바일 트래픽이 높지만 이탈률도 높습니다. 모바일 최적화가 시급합니다.",
+            actions: [
+              "반응형 디자인 점검",
+              "터치 친화적 UI/UX 개선",
+              "모바일 페이지 속도 최적화",
+            ],
+          });
+        }
+
+        // 전환율 개선
+        if (metrics.conversionRate < industryBenchmarks.conversionRate) {
+          recommendations.push({
+            priority: "high",
+            title: "전환율 최적화",
+            description:
+              "사용자 여정 분석을 통해 전환 장벽을 제거하고 CTA를 최적화하세요.",
+            actions: [
+              "전환 퍼널 분석 및 개선",
+              "A/B 테스트를 통한 CTA 최적화",
+              "신뢰 요소 추가 (리뷰, 인증 배지 등)",
+            ],
+          });
+        }
+
+        // 콘텐츠 전략
+        if (metrics.avgSessionDuration < industryBenchmarks.avgSessionDuration) {
+          recommendations.push({
+            priority: "medium",
+            title: "콘텐츠 참여도 향상",
+            description:
+              "사용자가 더 오래 머물 수 있도록 매력적인 콘텐츠를 제공하세요.",
+            actions: [
+              "동영상 콘텐츠 추가",
+              "인터랙티브 요소 도입",
+              "관련 콘텐츠 추천 강화",
+            ],
+          });
+        }
+
+        // 트래픽 소스 다양화
+        const organicTraffic =
+          analysisData.trafficSources.find((s) => s.source === "organic")
+            ?.percentage || 0;
+        if (organicTraffic > 0.7) {
+          recommendations.push({
+            priority: "medium",
+            title: "트래픽 소스 다양화",
+            description:
+              "검색 엔진에 과도하게 의존하고 있습니다. 다양한 마케팅 채널을 활용하세요.",
+            actions: [
+              "소셜 미디어 마케팅 강화",
+              "이메일 마케팅 캠페인 시작",
+              "인플루언서 협업 고려",
+            ],
+          });
+        }
+
+        // 신규 사용자 유치
+        const newUserRatio = analysisData.metrics.newUsers / analysisData.metrics.totalUsers;
+        if (newUserRatio < 0.3) {
+          recommendations.push({
+            priority: "low",
+            title: "신규 사용자 유치 강화",
+            description:
+              "재방문자 비율이 높습니다. 신규 사용자 유치 전략을 수립하세요.",
+            actions: [
+              "SEO 최적화 강화",
+              "콘텐츠 마케팅 확대",
+              "파트너십 및 협업 추진",
+            ],
+          });
+        }
+
+        return recommendations;
+      }
+
+      // 리포트 렌더링
+      function renderExecutiveSummary() {
+        const summary = document.getElementById("executiveSummary");
+        const metrics = analysisData.metrics;
+
+        summary.innerHTML = `
+          <p style="font-size: 1.1em; margin-bottom: 15px; line-height: 1.8;">
+            본 리포트는 최근 ${analysisData.period.days}일간의 Google Analytics 데이터를 종합 분석한 결과입니다.
+            총 <strong>${formatNumber(metrics.totalSessions)}</strong>개의 세션과 
+            <strong>${formatNumber(metrics.totalUsers)}</strong>명의 사용자가 방문했으며,
+            평균 세션 시간은 <strong>${formatDuration(metrics.avgSessionDuration)}</strong>,
+            이탈률은 <strong>${formatPercentage(metrics.bounceRate)}</strong>입니다.
+          </p>
+          <p style="font-size: 1.1em; line-height: 1.8;">
+            주요 개선 포인트로는 이탈률 감소, 전환율 향상, 모바일 사용자 경험 개선 등이 식별되었습니다.
+            본 리포트의 권장사항을 우선순위에 따라 실행하시면 웹사이트 성능을 크게 개선할 수 있습니다.
+          </p>
+        `;
+      }
+
+      function renderKeyMetrics() {
+        const container = document.getElementById("keyMetrics");
+        const metrics = analysisData.metrics;
+
+        const metricCards = [
+          {
+            label: "총 세션",
+            value: formatNumber(metrics.totalSessions),
+            trend: metrics.trends.sessionsGrowth,
+          },
+          {
+            label: "총 사용자",
+            value: formatNumber(metrics.totalUsers),
+            trend: metrics.trends.usersGrowth,
+          },
+          {
+            label: "신규 사용자",
+            value: formatNumber(metrics.newUsers),
+            percentage: ((metrics.newUsers / metrics.totalUsers) * 100).toFixed(1) + "%",
+          },
+          {
+            label: "페이지뷰",
+            value: formatNumber(metrics.pageViews),
+          },
+          {
+            label: "평균 세션 시간",
+            value: formatDuration(metrics.avgSessionDuration),
+          },
+          {
+            label: "이탈률",
+            value: formatPercentage(metrics.bounceRate),
+          },
+          {
+            label: "전환율",
+            value: formatPercentage(metrics.conversionRate),
+          },
+          {
+            label: "총 전환",
+            value: formatNumber(metrics.totalConversions),
+          },
+        ];
+
+        container.innerHTML = metricCards
+          .map((metric) => {
+            const trendHtml = metric.trend
+              ? `<div class="trend ${metric.trend > 0 ? "positive" : "negative"}">
+                  ${metric.trend > 0 ? "↑" : "↓"} ${Math.abs(metric.trend).toFixed(1)}%
+                </div>`
+              : "";
+            const percentageHtml = metric.percentage
+              ? `<div class="trend">${metric.percentage}</div>`
+              : "";
+
+            return `
+              <div class="metric-card">
+                <div class="label">${metric.label}</div>
+                <div class="value">${metric.value}</div>
+                ${trendHtml || percentageHtml}
+              </div>
+            `;
+          })
+          .join("");
+
+        // 인사이트 렌더링
+        const insights = analyzeMetrics();
+        const insightsHtml = insights
+          .map(
+            (insight) => `
+            <div class="insight-box ${insight.type}">
+              <h4>${insight.title}</h4>
+              <p>${insight.message}</p>
+            </div>
+          `,
+          )
+          .join("");
+
+        document.getElementById("metricsAnalysis").innerHTML = insightsHtml;
+      }
+
+      function renderRecommendations() {
+        const recommendations = generateRecommendations();
+        const container = document.getElementById("recommendations");
+
+        container.innerHTML = recommendations
+          .map(
+            (rec) => `
+            <div class="recommendation-card priority-${rec.priority}">
+              <span class="priority ${rec.priority}">${rec.priority.toUpperCase()} PRIORITY</span>
+              <h4>${rec.title}</h4>
+              <p>${rec.description}</p>
+              <ul style="margin-top: 10px; padding-left: 20px; color: #666;">
+                ${rec.actions.map((action) => `<li>${action}</li>`).join("")}
+              </ul>
+            </div>
+          `,
+          )
+          .join("");
+
+        // 개선 요약
+        const summary = `
+          <div class="insight-box">
+            <h4>📊 개선 요약</h4>
+            <p>
+              총 <strong>${recommendations.length}</strong>개의 개선 방안이 제시되었습니다.
+              우선순위가 높은 항목부터 순차적으로 실행하시기 바랍니다.
+            </p>
+          </div>
+        `;
+        document.getElementById("improvementSummary").innerHTML = summary;
+      }
+
+      function renderBenchmarkTable() {
+        const tbody = document.getElementById("benchmarkTable");
+        const metrics = analysisData.metrics;
+
+        const benchmarks = [
+          {
+            metric: "이탈률",
+            current: formatPercentage(metrics.bounceRate),
+            industry: formatPercentage(industryBenchmarks.bounceRate),
+            status: metrics.bounceRate <= industryBenchmarks.bounceRate ? "good" : "bad",
+          },
+          {
+            metric: "평균 세션 시간",
+            current: formatDuration(metrics.avgSessionDuration),
+            industry: formatDuration(industryBenchmarks.avgSessionDuration),
+            status:
+              metrics.avgSessionDuration >= industryBenchmarks.avgSessionDuration
+                ? "good"
+                : "warning",
+          },
+          {
+            metric: "페이지/세션",
+            current: analysisData.userBehavior.pagesPerSession.toFixed(1),
+            industry: industryBenchmarks.pagesPerSession.toFixed(1),
+            status:
+              analysisData.userBehavior.pagesPerSession >=
+              industryBenchmarks.pagesPerSession
+                ? "good"
+                : "warning",
+          },
+          {
+            metric: "전환율",
+            current: formatPercentage(metrics.conversionRate),
+            industry: formatPercentage(industryBenchmarks.conversionRate),
+            status:
+              metrics.conversionRate >= industryBenchmarks.conversionRate ? "good" : "bad",
+          },
+        ];
+
+        tbody.innerHTML = benchmarks
+          .map(
+            (b) => `
+            <tr>
+              <td><strong>${b.metric}</strong></td>
+              <td>${b.current}</td>
+              <td>${b.industry}</td>
+              <td>
+                <span class="badge ${b.status}">
+                  ${b.status === "good" ? "양호" : b.status === "warning" ? "주의" : "개선 필요"}
+                </span>
+              </td>
+            </tr>
+          `,
+          )
+          .join("");
+      }
+
+      function renderActionPlan() {
+        const recommendations = generateRecommendations();
+        const highPriority = recommendations.filter((r) => r.priority === "high");
+        const mediumPriority = recommendations.filter((r) => r.priority === "medium");
+        const lowPriority = recommendations.filter((r) => r.priority === "low");
+
+        const plan = `
+          <h3>🔴 즉시 실행 (High Priority)</h3>
+          <ol style="margin-left: 20px; margin-bottom: 20px; line-height: 2;">
+            ${highPriority.map((r) => `<li><strong>${r.title}</strong>: ${r.description}</li>`).join("")}
+          </ol>
+
+          <h3>🟡 단기 계획 (Medium Priority)</h3>
+          <ol style="margin-left: 20px; margin-bottom: 20px; line-height: 2;">
+            ${mediumPriority.map((r) => `<li><strong>${r.title}</strong>: ${r.description}</li>`).join("")}
+          </ol>
+
+          <h3>🟢 장기 계획 (Low Priority)</h3>
+          <ol style="margin-left: 20px; line-height: 2;">
+            ${lowPriority.map((r) => `<li><strong>${r.title}</strong>: ${r.description}</li>`).join("")}
+          </ol>
+        `;
+
+        document.getElementById("actionPlan").innerHTML = plan;
+      }
+
+      // 차트 렌더링 (샘플 데이터가 있을 때)
+      function renderCharts() {
+        // 트래픽 소스 차트
+        if (analysisData.trafficSources.length > 0) {
+          const ctx = document.getElementById("trafficSourceChart").getContext("2d");
+          new Chart(ctx, {
+            type: "doughnut",
+            data: {
+              labels: analysisData.trafficSources.map((s) => s.source),
+              datasets: [
+                {
+                  data: analysisData.trafficSources.map((s) => s.sessions),
+                  backgroundColor: [
+                    "rgba(99, 102, 241, 0.8)",
+                    "rgba(236, 72, 153, 0.8)",
+                    "rgba(34, 197, 94, 0.8)",
+                    "rgba(251, 146, 60, 0.8)",
+                  ],
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+            },
+          });
+        }
+
+        // 디바이스 차트
+        if (analysisData.devices.length > 0) {
+          const ctx = document.getElementById("deviceChart").getContext("2d");
+          new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: analysisData.devices.map((d) => d.device),
+              datasets: [
+                {
+                  label: "세션 수",
+                  data: analysisData.devices.map((d) => d.sessions),
+                  backgroundColor: "rgba(99, 102, 241, 0.8)",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+            },
+          });
+        }
+      }
+
+      // 초기화
+      function init() {
+        // 날짜 설정
+        document.getElementById("reportDate").textContent = new Date().toLocaleString("ko-KR");
+        const nextUpdate = new Date();
+        nextUpdate.setDate(nextUpdate.getDate() + 7);
+        document.getElementById("nextUpdate").textContent = nextUpdate.toLocaleDateString("ko-KR");
+
+        // 리포트 렌더링
+        renderExecutiveSummary();
+        renderKeyMetrics();
+        renderRecommendations();
+        renderBenchmarkTable();
+        renderActionPlan();
+        renderCharts();
+      }
+
+      // 페이지 로드 시 초기화
+      window.addEventListener("load", init);
+    </script>
+  </body>
+</html>
